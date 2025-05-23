@@ -1,8 +1,7 @@
 package com.carolin.libraryproject.loan;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/loans")
@@ -16,8 +15,9 @@ public class LoanController {
     }
 
     @PostMapping
-    public Loan addLoan(@RequestParam Long userId, @RequestParam Long bookId) {
-        return loanService.addLoan(userId, bookId);
+    public ResponseEntity<Loan> createLoan(@RequestParam Long userId, @RequestParam Long bookId) {
+        Loan loan = loanService.createLoan(userId, bookId);
+        return ResponseEntity.ok(loan);
     }
 
     @PutMapping("/{id}/return")

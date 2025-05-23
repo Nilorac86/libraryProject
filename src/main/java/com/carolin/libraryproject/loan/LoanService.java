@@ -2,8 +2,10 @@ package com.carolin.libraryproject.loan;
 
 import com.carolin.libraryproject.book.Book;
 import com.carolin.libraryproject.book.BookRepository;
-import com.carolin.libraryproject.users.User;
-import com.carolin.libraryproject.users.UserRepository;
+import com.carolin.libraryproject.exceptionHandler.NoAvailableCopiesException;
+import com.carolin.libraryproject.user.User;
+import com.carolin.libraryproject.user.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,22 +28,43 @@ public class LoanService {
 
     }
 
+    // Hämtar en användares alla lån med användar id
     public List<Loan> findUserLoans (Long userId) {
         return loanRepository.findByUserId(userId);
     }
 
-    public Loan addLoan(Long userId, Long bookId) {
+
+    // Skapar ett lån, genom användares id och bokens id. Uppdaterar antal tillgängliga kopior av boken.
+
+    public Loan createLoan(Long userId, Long bookId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Book not found"));
+
+
+        // Kontroll om boken finns tillgänglig innan lån utförs.
+
+        if (book.getAvailableCopies() <= 0 ){
+            throw new NoAvailableCopiesException("No copies available of the book: " + book.getTitle());
+        }
 
         Loan loan = new Loan();
         loan.setUser(user);
+
         loan.setBook(book);
 
+        Book loanBook = loan.getBook();
+        loanBook.setAvailableCopies(book.getAvailableCopies() - 1);
+
         return loanRepository.save(loan);
+
     }
+
+
+    // Återlämning av bok via lånets id. Lägger till dagens datum för retur av lånet
+    // samt uppdaterar antalet tillgängliga kopior.
+
 
     public void returnBook(Long loanId) {
 

@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.users;
+package com.carolin.libraryproject.user;
 
 import com.carolin.libraryproject.loan.Loan;
 import jakarta.persistence.*;

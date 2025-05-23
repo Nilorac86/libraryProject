@@ -1,8 +1,7 @@
-package com.carolin.libraryproject.users;
+package com.carolin.libraryproject.user;
 
 import com.carolin.libraryproject.loan.Loan;
 import com.carolin.libraryproject.loan.LoanService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

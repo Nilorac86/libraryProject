@@ -1,7 +1,7 @@
 package com.carolin.libraryproject.loan;
 
 import com.carolin.libraryproject.book.Book;
-import com.carolin.libraryproject.users.User;
+import com.carolin.libraryproject.user.User;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -34,7 +34,7 @@ public class Loan {
     private LocalDateTime returnedDate;
 
 
-    // Lägger till datum och tid vid lån av bok
+    // Lägger till datum och tid vid lån av bok samt sätter återlämningsdatum till + 14 dagar.
     @PrePersist
     protected void onCreate() {
         this.borrowedDate = LocalDateTime.now();
@@ -50,6 +50,8 @@ public class Loan {
     public Loan() {
     }
 
+
+    // Konstruktor
     public Loan(User user, Book book, LocalDateTime borrowedDate, LocalDateTime dueDate) {
         this.user = user;
         this.book = book;

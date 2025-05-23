@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.users;
+package com.carolin.libraryproject.user;
 
 import org.springframework.stereotype.Service;
 
