@@ -1,8 +1,8 @@
 package com.carolin.libraryproject.authors.authorDto;
 
+
 public class AuthorDto {
-    private String firstName;
-    private String lastName;
+    private String fullName;
     private int birthYear;
     private String nationality;
 
@@ -10,35 +10,27 @@ public class AuthorDto {
     public AuthorDto() {
     }
 
-    public AuthorDto(String firstName, String lastName, int birthYear, String nationality) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+
+    public AuthorDto(String fullName, int birthYear, String nationality) {
+        this.fullName = fullName;
         this.birthYear = birthYear;
         this.nationality = nationality;
 
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getBirthYear() {
+    public int getBirthYear() {
         return birthYear;
     }
 
-    public void setBirthYear(String birthYear) {
+    public void setBirthYear(int birthYear) {
         this.birthYear = birthYear;
     }
 

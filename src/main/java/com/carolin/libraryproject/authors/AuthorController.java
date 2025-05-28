@@ -1,7 +1,9 @@
 package com.carolin.libraryproject.authors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -16,17 +18,38 @@ public class AuthorController {
 
 
     @GetMapping
-    public List<Author> getAllAuthors() {
-        return authorService.getAllAuthors();
+    public ResponseEntity<List<Author>> getAllAuthors() {
+        List<Author> authors = authorService.getAllAuthors();
+
+        if (authors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(authors);
     }
+
 
     @GetMapping("/name/{lastname}")
-    public List<Author> searchAuthorByLastname(@PathVariable String lastname) {
-        return authorService.findByLastname(lastname);
+    public ResponseEntity<List<Author>> searchAuthorByLastname(@PathVariable String lastname) {
+        List<Author> authors = authorService.findByLastname(lastname);
+
+        if (authors.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(authors);
     }
 
+
     @PostMapping
-    public Author addAuthor(@RequestBody Author author) {
-        return authorService.addAuthor(author);
+    public ResponseEntity<Author> addAuthor(@RequestBody Author author) {
+
+        if(author == null) {
+        return ResponseEntity.badRequest().build();
+        }
+
+        Author savedAuthor = authorService.addAuthor(author);
+        URI location = URI.create("/authors/" + savedAuthor.getId());
+
+        return ResponseEntity.created(location).body(savedAuthor);
     }
+
 }

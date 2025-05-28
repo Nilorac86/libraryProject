@@ -4,36 +4,28 @@ import java.time.LocalDateTime;
 
 public class UserDto {
 
-    private String firstName;
-    private String lastName;
+
+    private String fullName;
     private String email;
     private LocalDateTime registrationDate;
 
     public UserDto() {
     }
-    public UserDto( String firstName, String lastName, String email, LocalDateTime registrationDate) {
-        this.firstName = firstName;
-        this.lastName = lastName;
+
+    public UserDto( String fullName, String email, LocalDateTime registrationDate) {
+        this.fullName = fullName;
         this.email = email;
         this.registrationDate = registrationDate;
     }
 
 
-
-    public String getFirstName() {
-        return firstName;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getEmail() {

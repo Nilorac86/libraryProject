@@ -14,8 +14,7 @@ public class UserMapper {
             return null;
         }
         return new UserDto(
-                user.getFirstName(),
-                user.getLastName(),
+                user.getFirstName() + " " + user.getLastName(),
                 user.getEmail(),
                 user.getRegistrationDate());
     }
@@ -26,14 +25,14 @@ public class UserMapper {
         }
 
         User user = new User();
-        user.setFirstName(userDto.getFirstName());
-        user.setLastName(userDto.getLastName());
+        user.setFirstName(user.getFirstName());
+        user.setLastName(user.getLastName());
         user.setEmail(userDto.getEmail());
         user.setRegistrationDate(userDto.getRegistrationDate());
         return user;
     }
 
-    public List<UserDto> toUserDtoList(List<User> users) {
+    public List<UserDto> toDtoList(List<User> users) {
         if (users == null) {
             return Collections.emptyList();
         }

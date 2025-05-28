@@ -23,6 +23,7 @@ public class Author {
     @Column(name = "nationality")
     private String nationality;
 
+    // Lista böcker ??
 
 
     // Tom konstruktor

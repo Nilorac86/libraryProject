@@ -1,32 +1,41 @@
 package com.carolin.libraryproject.book;
 
-import org.springframework.stereotype.Repository;
+import com.carolin.libraryproject.book.bookDto.BookDto;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+
+
 
 @Service
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookMapper bookMapper;
 
-
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
         this.bookRepository = bookRepository;
+        this.bookMapper = bookMapper;
     }
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public Page<BookDto> getAllBooks(Pageable pageable) {
+
+        Page<Book> booksPage = bookRepository.findAll(pageable);
+
+        return booksPage.map(bookMapper::toDto);
     }
 
-    public List<Book> getBookByTitle(String title) {
-        List<Book> books = bookRepository.searchBookByTitle(title);
+    public BookDto getBookByTitle(String title) {
+        Book book = bookRepository.searchBookByTitleIgnoreCase(title);
 
-        return books;
+        return bookMapper.toDto(book);
     }
 
-    public void addBook(Book book) {
+
+    public Book addBook(Book book) {
         bookRepository.save(book);
+        return book;
     }
 
 

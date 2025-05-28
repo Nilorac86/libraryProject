@@ -2,16 +2,17 @@ package com.carolin.libraryproject.book.bookDto;
 
 import com.carolin.libraryproject.authors.authorDto.AuthorDto;
 
-public class BookWithDetailsDto {
+public class BookDto {
     private String title;
-    private String publicationYear;
+    private int publicationYear;
     private int availableCopies;
     private AuthorDto author;
 
-    public BookWithDetailsDto() {
+    public BookDto() {
     }
 
-    public BookWithDetailsDto(String title, String publicationYear, int availableCopies, AuthorDto author) {
+
+    public BookDto(String title, int publicationYear, int availableCopies, AuthorDto author) {
         this.title = title;
         this.publicationYear = publicationYear;
         this.availableCopies = availableCopies;
@@ -26,11 +27,11 @@ public class BookWithDetailsDto {
         this.title = title;
     }
 
-    public String getPublicationYear() {
+    public int getPublicationYear() {
         return publicationYear;
     }
 
-    public void setPublicationYear(String publicationYear) {
+    public void setPublicationYear(int publicationYear) {
         this.publicationYear = publicationYear;
     }
 

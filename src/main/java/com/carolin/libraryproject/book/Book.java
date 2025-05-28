@@ -1,6 +1,7 @@
 package com.carolin.libraryproject.book;
 
 import com.carolin.libraryproject.authors.Author;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -27,6 +28,7 @@ public class Book {
     // FK relation till Author
     @ManyToOne
     @JoinColumn(name = "author_id", referencedColumnName = "author_id", nullable = true)
+   // @JsonIgnore ??
     private Author author;
 
     // Tom konstruktor

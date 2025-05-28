@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.loan;
 
+import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
