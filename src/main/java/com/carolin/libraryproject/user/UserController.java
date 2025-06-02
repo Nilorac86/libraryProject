@@ -16,11 +16,12 @@ public class UserController {
 
     private final UserService userService;
     private final LoanService loanService;
+    private final UserMapper userMapper;
 
-    public UserController(UserService userService, LoanService loanService) {
+    public UserController(UserService userService, LoanService loanService, UserMapper userMapper) {
         this.userService = userService;
         this.loanService = loanService;
-
+        this.userMapper = userMapper;
     }
 
     @GetMapping
@@ -38,6 +39,7 @@ public class UserController {
     public ResponseEntity<UserDto> findUserByEmail(@PathVariable String email) {
         UserDto user = userService.findUserByEmail(email);
 
+
         if (user == null) {
             return ResponseEntity.notFound().build();
         }
@@ -46,15 +48,16 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> addUser(@RequestBody User user) {
 
         if (user == null) {
             return ResponseEntity.badRequest().build();
         }
         User savedUser = userService.addUser(user);
+        UserDto userDto = userMapper.toUserDto(savedUser);
         URI location = URI.create("/users/" + savedUser.getId());
 
-        return ResponseEntity.created(location).body(savedUser);
+        return ResponseEntity.created(location).body(userDto);
     }
 
     @GetMapping("/{userId}/loans")

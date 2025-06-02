@@ -1,6 +1,5 @@
 package com.carolin.libraryproject;
 
-
 import com.carolin.libraryproject.book.Book;
 import com.carolin.libraryproject.book.BookRepository;
 import com.carolin.libraryproject.user.User;
@@ -61,7 +60,7 @@ public class IntegrationTestLoan {
                             .param("userId", String.valueOf(user.getId()))
                             .param("bookId", String.valueOf(book.getId()))
                             .contentType(MediaType.APPLICATION_JSON))
-                    .andExpect(status().isOk())
+                    .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.user.id").value(user.getId()))
                     .andExpect(jsonPath("$.book.id").value(book.getId()));
         } catch (Exception e) {

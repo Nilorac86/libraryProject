@@ -36,6 +36,7 @@ public class LoanService {
     }
 
 
+    // Skapar ett lån, genom användares id och bokens id. Uppdaterar antal tillgängliga kopior av boken.
     @Transactional
     public Loan createLoan(Long userId, Long bookId) {
         User user = userRepository.findById(userId)
@@ -70,13 +71,12 @@ public class LoanService {
     }
 
 
-    // Skapar ett lån, genom användares id och bokens id. Uppdaterar antal tillgängliga kopior av boken.
+
 
 
 
     // Återlämning av bok via lånets id. Lägger till dagens datum för retur av lånet
     // samt uppdaterar antalet tillgängliga kopior.
-
 
     public void returnBook(Long loanId) {
 

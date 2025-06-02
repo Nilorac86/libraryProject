@@ -31,4 +31,10 @@ public class CustomExceptionHandler {
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
+    @ExceptionHandler(NoAuthorFoundException.class)
+        public ResponseEntity<String>handleNoAuthor(NoAuthorFoundException ex){
+        log.warn("No author found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+            
+    }
 }

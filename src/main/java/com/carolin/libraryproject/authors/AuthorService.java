@@ -2,7 +2,6 @@ package com.carolin.libraryproject.authors;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,7 +20,7 @@ public class AuthorService {
     }
 
     public List<Author> findByLastname (String lastname) {
-        List<Author> authors = authorRepository.findAuthorsByLastname(lastname);
+        List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
         return authors;
     }
 

@@ -19,18 +19,19 @@ public class UserMapper {
                 user.getRegistrationDate());
     }
 
-    public User toUserEntity(UserDto userDto) {
-        if (userDto == null) {
-            return null;
-        }
+//    public User toUserEntity(UserDto userDto) {
+//        if (userDto == null) {
+//            return null;
+//        }
+//
+//        User user = new User();
+//        user.setFirstName(user.getFirstName());
+//        user.setLastName(user.getLastName());
+//        user.setEmail(userDto.getEmail());
+//        user.setRegistrationDate(userDto.getRegistrationDate());
+//        return user;
+//    }
 
-        User user = new User();
-        user.setFirstName(user.getFirstName());
-        user.setLastName(user.getLastName());
-        user.setEmail(userDto.getEmail());
-        user.setRegistrationDate(userDto.getRegistrationDate());
-        return user;
-    }
 
     public List<UserDto> toDtoList(List<User> users) {
         if (users == null) {

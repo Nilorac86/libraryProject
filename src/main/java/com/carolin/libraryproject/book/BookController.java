@@ -1,6 +1,7 @@
 package com.carolin.libraryproject.book;
 
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
 
 @RestController
@@ -21,6 +23,17 @@ public class BookController {
     }
 
     @GetMapping
+    public ResponseEntity<List<BookDto>> findAll() {
+        List<BookDto> books = bookService.getAllBooks();
+
+        if(books.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(books);
+    }
+
+
+    @GetMapping("/page")
     public ResponseEntity<Page<BookDto>> getAllBooks(Pageable pageable) {
 
         Page<BookDto> books = bookService.getAllBooks(pageable);
@@ -50,10 +63,27 @@ public class BookController {
             return ResponseEntity.badRequest().build();
         }
 
-        Book savedBook = bookService.addBook(book);
+        Book savedBook = null;
+        try {
+            savedBook = bookService.addBook(book);
+        } catch (NoAuthorFoundException e) {
+            throw new RuntimeException(e);
+        }
         URI location = URI.create("books/" + savedBook.getId());
 
         return ResponseEntity.created(location).body(savedBook);
+    }
+
+    @GetMapping("/search/author")
+    public ResponseEntity<List<BookDto>> searchBookByAuthorLastName(@RequestParam String lastName) {
+
+        List<BookDto> books = bookService.getBooksByAuthorLastName(lastName);
+
+        if (lastName == null || lastName.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(books);
     }
 
 }

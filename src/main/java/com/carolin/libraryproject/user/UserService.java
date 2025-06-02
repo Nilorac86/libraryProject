@@ -4,6 +4,7 @@ import com.carolin.libraryproject.user.userDto.UserDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -23,12 +24,13 @@ public class UserService {
 
     public UserDto findUserByEmail(String email) {
 
-       User user = userRepository.findByEmail(email);
+       Optional<User> user = userRepository.findByEmail(email);
 
-       return userMapper.toUserDto(user);
+       return user.map(userMapper::toUserDto).orElse(null);
     }
 
     public User addUser(User user) {
+
         return userRepository.save(user);
     }
 
