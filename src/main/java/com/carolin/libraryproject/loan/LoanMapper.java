@@ -1,6 +1,6 @@
 package com.carolin.libraryproject.loan;
 
-import com.carolin.libraryproject.book.BookMapper;
+import com.carolin.libraryproject.book.bookDto.BookDto;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.user.UserMapper;
 import org.springframework.stereotype.Component;
@@ -12,14 +12,15 @@ import java.util.stream.Collectors;
 @Component
 public class LoanMapper {
 
-    private BookMapper bookMapper;
+    private BookDto.BookMapper bookMapper;
     private UserMapper userMapper;
 
-    public LoanMapper(BookMapper bookMapper, UserMapper userMapper) {
+    public LoanMapper(BookDto.BookMapper bookMapper, UserMapper userMapper) {
         this.bookMapper = bookMapper;
         this.userMapper = userMapper;
     }
 
+    //Mapper på lån
     public LoanDto toDto(Loan loan) {
         if (loan == null) {
             return null;
@@ -34,7 +35,7 @@ public class LoanMapper {
                 loan.getReturnedDate());
     }
 
-
+    // Mapper på lån med stream som returneras som en lista
     public List<LoanDto> toDtoList(List<Loan> loans) {
         if (loans == null) {
             return Collections.emptyList();

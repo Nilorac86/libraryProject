@@ -15,6 +15,7 @@ public class BookMapper {
         this.authorMapper = authorMapper;
     }
 
+    // Mapper på bok med författare
     public BookDto toDto(Book book) {
 
         if (book == null) {
@@ -30,6 +31,7 @@ public class BookMapper {
     }
 
 
+    // Mapper på bok med författare. En lista med stream
     public List<BookDto> toDtoList(List<Book> books) {
         if (books == null) {
             return Collections.emptyList();

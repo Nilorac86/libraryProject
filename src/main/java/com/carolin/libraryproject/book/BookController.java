@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -22,6 +21,7 @@ public class BookController {
         this.bookService = bookService;
     }
 
+    // Lista av alla böcker
     @GetMapping
     public ResponseEntity<List<BookDto>> findAll() {
         List<BookDto> books = bookService.getAllBooks();
@@ -32,7 +32,7 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-
+    // Lista av böcker genom pageable sortering
     @GetMapping("/page")
     public ResponseEntity<Page<BookDto>> getAllBooks(Pageable pageable) {
 
@@ -46,6 +46,7 @@ public class BookController {
     }
 
 
+    // Sök bok efter titel men parameter
     @GetMapping("/search")
     public ResponseEntity <BookDto> getBooksByTitle(@RequestParam String title) {
 
@@ -56,6 +57,7 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
 
+    // Lägger till en ny bok
     @PostMapping
     public ResponseEntity<Object> addBook(@RequestBody Book book) {
 
@@ -74,14 +76,17 @@ public class BookController {
         return ResponseEntity.created(location).body(savedBook);
     }
 
+
+    // Hämtar en författares alla böcker genom parameter med författarens efternamn
     @GetMapping("/search/author")
     public ResponseEntity<List<BookDto>> searchBookByAuthorLastName(@RequestParam String lastName) {
 
         List<BookDto> books = bookService.getBooksByAuthorLastName(lastName);
 
         if (lastName == null || lastName.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(null);
         }
+
 
         return ResponseEntity.ok(books);
     }

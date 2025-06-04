@@ -1,6 +1,5 @@
 package com.carolin.libraryproject.user;
 
-import com.carolin.libraryproject.loan.Loan;
 import com.carolin.libraryproject.loan.LoanService;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.user.userDto.UserDto;
@@ -24,6 +23,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    // Hämtar en lisa av alla användare returnerar en userDto
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
 
@@ -35,6 +35,7 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+    // Hämtar användare baserat på email som variabel i url sökningen
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> findUserByEmail(@PathVariable String email) {
         UserDto user = userService.findUserByEmail(email);
@@ -47,6 +48,8 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+
+    // Lägger till användare genom input i body.
     @PostMapping
     public ResponseEntity<UserDto> addUser(@RequestBody User user) {
 
@@ -60,6 +63,8 @@ public class UserController {
         return ResponseEntity.created(location).body(userDto);
     }
 
+
+    // Hämtar användares lån
     @GetMapping("/{userId}/loans")
     public ResponseEntity<List<LoanDto>> getLoans(@PathVariable Long userId) {
         List<LoanDto> loan = loanService.findUserLoans(userId);

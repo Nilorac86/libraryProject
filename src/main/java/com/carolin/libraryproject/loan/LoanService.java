@@ -1,10 +1,11 @@
 package com.carolin.libraryproject.loan;
 import com.carolin.libraryproject.book.Book;
 import com.carolin.libraryproject.book.BookRepository;
+import com.carolin.libraryproject.exceptionHandler.LoanExpiredException;
 import com.carolin.libraryproject.exceptionHandler.NoAvailableCopiesException;
+import com.carolin.libraryproject.exceptionHandler.NoLoanFoundException;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.user.User;
-import com.carolin.libraryproject.user.UserMapper;
 import com.carolin.libraryproject.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -24,14 +25,12 @@ public class LoanService {
 
     private UserRepository userRepository;
 
-    private UserMapper userMapper;
 
 
-    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserRepository userRepository, UserMapper userMapper, LoanMapper loanMapper) {
+    public LoanService(LoanRepository loanRepository, BookRepository bookRepository, UserRepository userRepository,  LoanMapper loanMapper) {
         this.loanRepository = loanRepository;
         this.bookRepository = bookRepository;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
         this.loanMapper = loanMapper;
     }
 
@@ -46,7 +45,6 @@ public class LoanService {
 
 
         // Kontroll om boken finns tillgänglig innan lån utförs.
-
         if (book.getAvailableCopies() <= 0 ){
             throw new NoAvailableCopiesException("No copies available of the book: " + book.getTitle());
         }
@@ -55,6 +53,7 @@ public class LoanService {
         loan.setUser(user);
 
         loan.setBook(book);
+
 
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         bookRepository.save(book);
@@ -67,11 +66,12 @@ public class LoanService {
     public List<LoanDto> findUserLoans (Long userId) {
         List<Loan> loans = loanRepository.findByUserId(userId);
 
+        if (loans.isEmpty()) {
+            throw new NoLoanFoundException("No loan found for user: " + userId);
+        }
+
         return loanMapper.toDtoList(loans);
     }
-
-
-
 
 
 
@@ -99,15 +99,20 @@ public class LoanService {
 
 
 
+    // Förlänga returdatum på en lånad bok
     public void extendBook(Long loanId) {
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new EntityNotFoundException("Loan not found with id " + loanId));
+
+        if (loan.getDueDate().isBefore(LocalDateTime.now())) {
+            throw new LoanExpiredException("Loan with id: " + loanId + " duedate has passed. Loan cannot be extended");
+        }
 
         if (loan.getReturnedDate() != null) {
             throw new IllegalStateException("Book already returned and cannot be extended");
         }
 
-        LocalDateTime newReturnDate = LocalDateTime.now().plusDays(14);
+        LocalDateTime newReturnDate = loan.getDueDate().plusDays(14);
         loan.setDueDate(newReturnDate);
         loanRepository.save(loan);
     }

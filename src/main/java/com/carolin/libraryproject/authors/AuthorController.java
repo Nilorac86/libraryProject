@@ -16,7 +16,7 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-
+    // Hämtar en lista av alla författare
     @GetMapping
     public ResponseEntity<List<Author>> getAllAuthors() {
         List<Author> authors = authorService.getAllAuthors();
@@ -27,8 +27,8 @@ public class AuthorController {
         return ResponseEntity.ok(authors);
     }
 
-
-    @GetMapping("/name/{lastname}")
+    // Hämtar författare via efternamn i sökvägen
+    @GetMapping("/lastname/{lastname}")
     public ResponseEntity<List<Author>> searchAuthorByLastname(@PathVariable String lastname) {
         List<Author> authors = authorService.findByLastname(lastname);
 
@@ -38,7 +38,7 @@ public class AuthorController {
         return ResponseEntity.ok(authors);
     }
 
-
+    // Lägger till en författare
     @PostMapping
     public ResponseEntity<Author> addAuthor(@RequestBody Author author) {
 

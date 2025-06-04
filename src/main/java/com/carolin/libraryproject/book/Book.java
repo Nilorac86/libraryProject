@@ -1,7 +1,6 @@
 package com.carolin.libraryproject.book;
 
 import com.carolin.libraryproject.authors.Author;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity

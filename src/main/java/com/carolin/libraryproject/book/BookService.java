@@ -4,13 +4,14 @@ import com.carolin.libraryproject.authors.Author;
 import com.carolin.libraryproject.authors.AuthorRepository;
 import com.carolin.libraryproject.book.bookDto.BookDto;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 
 @Service
@@ -20,13 +21,14 @@ public class BookService {
     private AuthorRepository authorRepository;
 
     private final BookRepository bookRepository;
-    private final BookMapper bookMapper;
+    private final BookDto.BookMapper bookMapper;
 
-    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, BookDto.BookMapper bookMapper) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
     }
 
+    // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
     public Page<BookDto> getAllBooks(Pageable pageable) {
 
         Page<Book> booksPage = bookRepository.findAll(pageable);
@@ -34,22 +36,25 @@ public class BookService {
         return booksPage.map(bookMapper::toDto);
     }
 
-
+    // En lista på alla böcker
     public List<BookDto> getAllBooks() {
         List<Book> books = bookRepository.findAll();
 
         return bookMapper.toDtoList(books);
     }
 
-
-    public BookDto getBookByTitle(String title) {
+    // Hitta bok genom att söka på bokens titel
+    public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
+        if (book == null) {
+            throw new EntityNotFoundException("Book: '"+ title + "' not found");
+        }
 
         return bookMapper.toDto(book);
     }
 
 
-
+    // Lägger till en bok
     public Book addBook(Book book) throws NoAuthorFoundException {
 
         Long authorId = book.getAuthor().getId();
@@ -62,12 +67,12 @@ public class BookService {
         return book;
     }
 
-
-    public List<BookDto> getBooksByAuthorLastName(String lastName) {
+    // Returnerar en lista med en författares böker genom sökning på författarens Efternamn
+    public List<BookDto> getBooksByAuthorLastName(String lastName) throws NoAuthorFoundException {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
 
         if (books.isEmpty()) {
-            return null;
+            throw new NoAuthorFoundException("No author with name: '" + lastName + "' found");
         }
         return bookMapper.toDtoList(books);
     }

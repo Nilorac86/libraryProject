@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.authors;
 
+import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +15,20 @@ public class AuthorService {
 
     }
 
+    // Hämtar alla författare
     public List<Author> getAllAuthors() {
        List<Author> authors = authorRepository.findAll();
        return authors;
     }
 
+    // Hämtar alla författare genom att söka på efternamn
     public List<Author> findByLastname (String lastname) {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
+
+        if (authors.isEmpty()) {
+            throw new NoAuthorFoundException("No author found with lastname: " + lastname);
+        }
+
         return authors;
     }
 

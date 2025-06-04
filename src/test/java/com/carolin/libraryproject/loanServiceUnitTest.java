@@ -15,10 +15,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 
@@ -82,13 +82,6 @@ public class loanServiceUnitTest {
         assertEquals(user, createdLoan.getUser());
         assertEquals(book, createdLoan.getBook());
         assertEquals(2, book.getAvailableCopies());
-
-        // Kontrollerar att de mockade repon blev anropade som förväntat.
-//        verify(userRepository).findById(userId);
-//        verify(bookRepository).findById(bookId);
-//        verify(bookRepository).save(any(Book.class));
-//        verify(loanRepository).save(any(Loan.class));
-
 
     }
 

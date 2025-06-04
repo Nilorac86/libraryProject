@@ -3,7 +3,6 @@ package com.carolin.libraryproject.authors.authorDto;
 import com.carolin.libraryproject.authors.Author;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +10,7 @@ import java.util.stream.Collectors;
 @Component
 public class AuthorMapper {
 
+    // Mapper författare
     public AuthorDto toDto(Author author) {
 
         if (author == null) {
@@ -24,6 +24,8 @@ public class AuthorMapper {
 
     }
 
+
+    // Mapper författare till lista genom stream
     List<AuthorDto> toDtoList(List<Author> authors) {
         if (authors == null) {
             return Collections.emptyList();

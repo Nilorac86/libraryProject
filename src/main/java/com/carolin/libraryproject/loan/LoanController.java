@@ -16,6 +16,7 @@ public class LoanController {
 
     }
 
+    // Skapa ett nytt lån med användarid och bokid som parameter
     @PostMapping
     public ResponseEntity<?> createLoan(@RequestParam Long userId, @RequestParam Long bookId) {
 
@@ -30,7 +31,7 @@ public class LoanController {
     }
 
 
-
+    // Återlämna lånad bok via lånid i sökväg
     @PutMapping("/{id}/return")
     public ResponseEntity<String> returnLoan(@PathVariable Long id) {
 
@@ -43,6 +44,7 @@ public class LoanController {
     }
 
 
+    // Förlänga lån av bok via lånid i sökväg
     @PutMapping("/{id}/extend")
     public ResponseEntity<String> extendLoan(@PathVariable Long id) {
 

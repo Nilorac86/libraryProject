@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 @Component
 public class UserMapper {
 
+
+    // Mappar användare
     public UserDto toUserDto(User user) {
 
         if (user == null) {
@@ -19,20 +21,9 @@ public class UserMapper {
                 user.getRegistrationDate());
     }
 
-//    public User toUserEntity(UserDto userDto) {
-//        if (userDto == null) {
-//            return null;
-//        }
-//
-//        User user = new User();
-//        user.setFirstName(user.getFirstName());
-//        user.setLastName(user.getLastName());
-//        user.setEmail(userDto.getEmail());
-//        user.setRegistrationDate(userDto.getRegistrationDate());
-//        return user;
-//    }
 
 
+    // Mappar användare med stream som returnerar en lista
     public List<UserDto> toDtoList(List<User> users) {
         if (users == null) {
             return Collections.emptyList();

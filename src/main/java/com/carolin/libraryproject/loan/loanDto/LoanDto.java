@@ -1,6 +1,5 @@
 package com.carolin.libraryproject.loan.loanDto;
 import com.carolin.libraryproject.book.bookDto.BookDto;
-import com.carolin.libraryproject.user.User;
 import com.carolin.libraryproject.user.userDto.UserDto;
 
 import java.time.LocalDateTime;
