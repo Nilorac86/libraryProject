@@ -54,4 +54,13 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleNoLoanFound(NoLoanFoundException ex){
         log.warn("Loan not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());}
+
+
+
+    @ExceptionHandler(AuthorAlredyExcistException.class)
+    public ResponseEntity<String> handleAuthorExist(AuthorAlredyExcistException ex){
+        log.warn("Author alredy exist: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());}
 }
+
+

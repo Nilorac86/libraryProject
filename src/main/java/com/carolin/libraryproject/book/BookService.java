@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-
+import java.util.Optional;
 
 
 @Service
@@ -61,6 +61,11 @@ public class BookService {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> new NoAuthorFoundException("No author found with id: " + authorId));
         book.setAuthor(author);
+
+        Optional<Book> bookOptional = bookRepository.findByTitleAndAuthorId(book.getTitle(), authorId);
+        if (bookOptional.isPresent()) {
+            return bookOptional.get();
+        }
 
         bookRepository.save(book);
 

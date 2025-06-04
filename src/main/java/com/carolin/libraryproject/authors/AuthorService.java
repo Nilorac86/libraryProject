@@ -1,9 +1,11 @@
 package com.carolin.libraryproject.authors;
 
+import com.carolin.libraryproject.exceptionHandler.AuthorAlredyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
@@ -33,6 +35,15 @@ public class AuthorService {
     }
 
     public Author addAuthor(Author author) {
+
+        Optional<Author> optionalAuthor = authorRepository
+                .findAuthorByFirstnameAndLastnameIgnoreCase(author.getFirstname(), author.getLastname());
+
+        if (optionalAuthor.isPresent()) {
+            throw new AuthorAlredyExcistException("Author with name: " + author.getFirstname()+ " "
+                    + author.getLastname() + " already exists");
+        }
+
         return authorRepository.save(author);
     }
 }
