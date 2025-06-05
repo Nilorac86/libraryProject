@@ -47,7 +47,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(LoanExpiredException.class)
     public ResponseEntity<String> handleLoanExpired(LoanExpiredException ex){
         log.warn("Loan dueDate has passed: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());}
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());}
 
     
     @ExceptionHandler(NoLoanFoundException.class)
@@ -57,10 +57,15 @@ public class CustomExceptionHandler {
 
 
 
-    @ExceptionHandler(AuthorAlredyExcistException.class)
-    public ResponseEntity<String> handleAuthorExist(AuthorAlredyExcistException ex){
-        log.warn("Author alredy exist: {}", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());}
+    @ExceptionHandler(AuthorAlreadyExcistException.class)
+    public ResponseEntity<String> handleAuthorExist(AuthorAlreadyExcistException ex){
+        log.warn("Author already exist: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FOUND).body(ex.getMessage());}
+
+    @ExceptionHandler(BookAlreadyExcistException.class)
+    public ResponseEntity<String> handleBookExist(BookAlreadyExcistException ex){
+        log.warn("Book already exist: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FOUND).body(ex.getMessage());}
 }
 
 

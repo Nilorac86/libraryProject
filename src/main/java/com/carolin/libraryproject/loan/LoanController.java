@@ -35,7 +35,7 @@ public class LoanController {
     @PutMapping("/{id}/return")
     public ResponseEntity<String> returnLoan(@PathVariable Long id) {
 
-        if(id == null) {
+        if(id == null || id <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
         }
 
@@ -48,7 +48,7 @@ public class LoanController {
     @PutMapping("/{id}/extend")
     public ResponseEntity<String> extendLoan(@PathVariable Long id) {
 
-        if (id == null) {
+        if (id == null || id <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
         }
         loanService.extendBook(id);

@@ -3,6 +3,7 @@ package com.carolin.libraryproject.book;
 import com.carolin.libraryproject.authors.Author;
 import com.carolin.libraryproject.authors.AuthorRepository;
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.exceptionHandler.BookAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,13 +65,16 @@ public class BookService {
 
         Optional<Book> bookOptional = bookRepository.findByTitleAndAuthorId(book.getTitle(), authorId);
         if (bookOptional.isPresent()) {
-            return bookOptional.get();
+            throw new BookAlreadyExcistException("Book: '" + book.getTitle()+
+                    "' already exist with author: " + author.getFirstname() + " " + author.getLastname());
         }
 
-        bookRepository.save(book);
+            bookRepository.save(book);
 
-        return book;
+            return book;
     }
+
+
 
     // Returnerar en lista med en författares böker genom sökning på författarens Efternamn
     public List<BookDto> getBooksByAuthorLastName(String lastName) throws NoAuthorFoundException {

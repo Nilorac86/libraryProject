@@ -1,6 +1,6 @@
 package com.carolin.libraryproject.authors;
 
-import com.carolin.libraryproject.exceptionHandler.AuthorAlredyExcistException;
+import com.carolin.libraryproject.exceptionHandler.AuthorAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +40,7 @@ public class AuthorService {
                 .findAuthorByFirstnameAndLastnameIgnoreCase(author.getFirstname(), author.getLastname());
 
         if (optionalAuthor.isPresent()) {
-            throw new AuthorAlredyExcistException("Author with name: " + author.getFirstname()+ " "
+            throw new AuthorAlreadyExcistException("Author with name: " + author.getFirstname()+ " "
                     + author.getLastname() + " already exists");
         }
 
