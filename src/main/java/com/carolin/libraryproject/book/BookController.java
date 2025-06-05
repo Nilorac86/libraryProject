@@ -71,6 +71,7 @@ public class BookController {
         } catch (NoAuthorFoundException e) {
             throw new RuntimeException(e);
         }
+
         URI location = URI.create("books/" + savedBook.getId());
 
         return ResponseEntity.created(location).body(savedBook);
