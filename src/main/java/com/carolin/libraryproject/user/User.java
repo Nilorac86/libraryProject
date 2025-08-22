@@ -30,6 +30,13 @@ public class User {
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
+    @Column(name = "role", nullable = false)
+    private String role;
+
+    @Column(nullable = false)
+    private boolean enabled = true;
+
+
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Loan> loans = new ArrayList<>();
 
@@ -39,9 +46,17 @@ public class User {
         this.registrationDate = LocalDateTime.now();
     }
 
+
     // Tom konstruktor
     public User() {
 
+    }
+
+    public User( String email, String password, String role ) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.enabled = true;
     }
 
     // Getters och setters
@@ -93,7 +108,21 @@ public class User {
         this.registrationDate = registrationDate;
     }
 
+    public String getRole() {
+        return role;
+    }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }
 
 
