@@ -46,7 +46,7 @@ public class BookController {
     }
 
 
-    // Sök bok efter titel men parameter
+    // Sök bok efter titel med parameter
     @GetMapping("/search")
     public ResponseEntity <BookDto> getBooksByTitle(@RequestParam String title) {
 
