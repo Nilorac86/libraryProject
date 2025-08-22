@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.loan;
 
+import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,24 +11,27 @@ import java.net.URI;
 public class LoanController {
 
     private final LoanService loanService;
+    private final LoanMapper loanMapper;
 
-    public LoanController(LoanService loanService) {
+    public LoanController(LoanService loanService, LoanMapper loanMapper) {
         this.loanService = loanService;
+        this.loanMapper = loanMapper;
 
     }
 
     // Skapa ett nytt lån med användarid och bokid som parameter
     @PostMapping
-    public ResponseEntity<?> createLoan(@RequestParam Long userId, @RequestParam Long bookId) {
+    public ResponseEntity<LoanDto> createLoan(@RequestParam Long userId, @RequestParam Long bookId) {
 
         if (userId == null || bookId == null) {
             return ResponseEntity.badRequest().build();
 
         }
         Loan loan = loanService.createLoan(userId, bookId);
+        LoanDto loanDto = loanMapper.toDto(loan);
         URI location = URI.create("/loans/" + loan.getId());
 
-        return ResponseEntity.created(location).body(loan);
+        return ResponseEntity.created(location).body(loanDto);
     }
 
 
