@@ -27,6 +27,8 @@ public class LoanMapper {
         }
 
         return new LoanDto(
+
+
                 userMapper.toUserDto(loan.getUser()),
                 loan.getId(),
                 bookMapper.toDto(loan.getBook()),

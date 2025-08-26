@@ -49,6 +49,7 @@ public class IntegrationTestLoan {
         user.setLastName("User");
         user.setEmail(uniqueEmail);
         user.setPassword("password");
+        user.setRole("USER");
         return userRepository.save(user);
     }
 
@@ -82,8 +83,8 @@ public class IntegrationTestLoan {
                             .param("bookId", String.valueOf(book.getId()))
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isCreated())
-                    .andExpect(jsonPath("$.user.id").value(user.getId()))
-                    .andExpect(jsonPath("$.book.id").value(book.getId()))
+                    .andExpect(jsonPath("$.user.id").doesNotExist())
+                    .andExpect(jsonPath("$.book.id").doesNotExist())
                     .andExpect(jsonPath("$.borrowedDate").value(startsWith(LocalDate.now().toString())));
             ;
         } catch (Exception e) {

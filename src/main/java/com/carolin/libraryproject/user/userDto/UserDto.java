@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 public class UserDto {
 
-
     private String fullName;
     private String email;
     private LocalDateTime registrationDate;

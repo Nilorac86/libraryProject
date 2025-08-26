@@ -19,7 +19,7 @@ public class LoanController {
 
     }
 
-    // Skapa ett nytt lån med användarid och bokid som parameter
+    // Skapa ett nytt lån med användarid och bokid som parameter. LoanDto response utan password.
     @PostMapping
     public ResponseEntity<LoanDto> createLoan(@RequestParam Long userId, @RequestParam Long bookId) {
 

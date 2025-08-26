@@ -16,6 +16,7 @@ public class UserMapper {
             return null;
         }
         return new UserDto(
+
                 user.getFirstName() + " " + user.getLastName(),
                 user.getEmail(),
                 user.getRegistrationDate());

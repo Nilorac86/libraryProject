@@ -7,6 +7,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -28,7 +30,18 @@ public class SecurityConfiguration {
                 .formLogin( form -> form.permitAll());
 
         return http.build();
+
     }
+
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+}
+
+
 //                .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers("/public/**").permitAll()
 //                        .requestMatchers(HttpMethod.GET, "/books").permitAll()
@@ -37,7 +50,5 @@ public class SecurityConfiguration {
 //                )
 //                .formLogin(Customizer.withDefaults());
 
-        //return http.build();
-    }
-
+//return http.build();
 

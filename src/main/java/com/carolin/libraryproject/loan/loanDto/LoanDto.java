@@ -19,6 +19,7 @@ public class LoanDto {
 
     public LoanDto(UserDto user, Long loanId, BookDto book, LocalDateTime borrowedDate, LocalDateTime dueDate, LocalDateTime returnedDate) {
 
+
         this.user = user;
         this.loanId = loanId;
         this.book = book;
@@ -26,6 +27,7 @@ public class LoanDto {
         this.dueDate = dueDate;
         this.returnedDate = returnedDate;
     }
+
 
 
     public Long getLoanId() {
