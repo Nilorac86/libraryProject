@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.user;
 import com.carolin.libraryproject.user.userDto.UserDto;
+import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +21,7 @@ public class UserMapper {
                 user.getFirstName() + " " + user.getLastName(),
                 user.getEmail(),
                 user.getRegistrationDate());
+
     }
 
 
@@ -34,4 +36,23 @@ public class UserMapper {
                 .map(this::toUserDto)
                 .collect(Collectors.toList());
         }
+
+// Användare requestDto
+    public User toUserEntity(UserRequestDto dto ) {
+        if (dto == null) {
+            return null;
+
+        }
+
+        User user = new User();
+        user.setFirstName(dto.getFirstName());
+        user.setLastName(dto.getLastName());
+        user.setEmail(dto.getEmail());
+        user.setPassword(dto.getPassword());
+        return user;
+
+    }
 }
+
+
+// göra en endpoint där man kan se de tio senaste lånen och endast göra den tillgänglig för admin ex.
