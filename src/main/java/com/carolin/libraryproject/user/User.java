@@ -30,10 +30,12 @@ public class User {
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
 
+
     @Column(name = "role", nullable = false)
     private String role;
 
-    @Column(nullable = false)
+    // kontrollerar om kontot är aktivt
+    @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
 
 
@@ -44,7 +46,13 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.registrationDate = LocalDateTime.now();
+        if (role == null) {
+            this.role = "ROLE_USER";
+        }
     }
+
+
+
 
 
     // Tom konstruktor
