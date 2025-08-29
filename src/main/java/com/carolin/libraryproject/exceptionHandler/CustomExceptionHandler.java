@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class CustomExceptionHandler {
 
@@ -66,6 +69,16 @@ public class CustomExceptionHandler {
     public ResponseEntity<String> handleBookExist(BookAlreadyExcistException ex){
         log.warn("Book already exist: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.FOUND).body(ex.getMessage());}
+
+
+    @ExceptionHandler(EmailAlreadyExcistException.class)
+    public ResponseEntity<String> handleEmailExist(EmailAlreadyExcistException ex){
+        log.warn("User with this email already exist: {}", ex.getMessage());
+        Map<String, String> errorResponse = Map.of("error", "Email already exist");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse.toString());}
+
+
 }
+
 
 
