@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.user;
 
+import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,10 @@ public class UserService {
 
     // Lägger till användare
     public User addUser(User user) {
+
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new EmailAlreadyExcistException("Email is already in use");
+        }
 
         return userRepository.save(user);
     }

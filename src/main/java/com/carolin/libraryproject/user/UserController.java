@@ -3,6 +3,7 @@ package com.carolin.libraryproject.user;
 import com.carolin.libraryproject.loan.LoanService;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.user.userDto.UserDto;
+import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
-    // Hämtar en lisa av alla användare returnerar en userDto
+    // Hämtar en lista av alla användare returnerar en userDto
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
 
@@ -51,15 +52,17 @@ public class UserController {
 
     // Lägger till användare genom input i body.
     @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody User user) {
+    public ResponseEntity<UserDto> addUser(@RequestBody UserRequestDto userRequestDto) {
 
-        if (user == null) {
+        if (userRequestDto == null) {
             return ResponseEntity.badRequest().build();
         }
+
+        User user = userMapper.toUserEntity(userRequestDto);
         User savedUser = userService.addUser(user);
         UserDto userDto = userMapper.toUserDto(savedUser);
-        URI location = URI.create("/users/" + savedUser.getId());
 
+        URI location = URI.create("/users/" + savedUser.getId());
         return ResponseEntity.created(location).body(userDto);
     }
 
