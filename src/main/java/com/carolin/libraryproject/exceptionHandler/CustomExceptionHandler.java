@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @ControllerAdvice
@@ -78,6 +77,21 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse.toString());}
 
 
+    @ExceptionHandler(NotValidPasswordException.class)
+    public ResponseEntity<String> handleNotValidPassword(NotValidPasswordException ex){
+        log.warn("Password not valid : {}", ex.getMessage());
+        Map<String, String> errorResponse = Map.of("error", "Password must be at least 8 characters, " +
+                "including one digit and one uppercase letter");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse.toString());}
+
+    @ExceptionHandler(NotValidEmailException.class)
+    public ResponseEntity<Map<String, String>> handleNotValidEmail(NotValidEmailException ex) {
+        log.warn("Email not valid: {}", ex.getMessage());
+        Map<String, String> errorResponse = Map.of(
+                "error", "Email is not in a valid format"
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 }
 
 

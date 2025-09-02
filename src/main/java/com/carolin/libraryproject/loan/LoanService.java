@@ -117,4 +117,9 @@ public class LoanService {
         loanRepository.save(loan);
     }
 
+    public List<LoanDto> findAllLoans() {
+        List<Loan> loans = loanRepository.findAll();
+        return loanMapper.toDtoList(loans);
+    }
+
 }

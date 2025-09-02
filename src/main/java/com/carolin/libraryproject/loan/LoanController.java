@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/loans")
@@ -18,6 +19,15 @@ public class LoanController {
         this.loanMapper = loanMapper;
 
     }
+
+    @GetMapping
+    public ResponseEntity<List<LoanDto>> getLoans() {
+
+        List<LoanDto> loans = loanService.findAllLoans();
+        return ResponseEntity.ok(loans);
+
+    }
+
 
     // Skapa ett nytt lån med användarid och bokid som parameter. LoanDto response utan password.
     @PostMapping
