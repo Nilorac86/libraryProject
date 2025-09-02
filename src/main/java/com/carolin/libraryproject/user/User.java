@@ -2,6 +2,8 @@ package com.carolin.libraryproject.user;
 
 import com.carolin.libraryproject.loan.Loan;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,15 +17,19 @@ public class User {
     @Column(name = "user_id", columnDefinition = "INTEGER")
     private Long id;
 
+    @NotBlank
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @NotBlank
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
+    @NotBlank
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @NotBlank
     @Column(name = "password", nullable = false)
     private String password;
 
