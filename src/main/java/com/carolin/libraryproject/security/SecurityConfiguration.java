@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -27,17 +28,25 @@ public class SecurityConfiguration {
                 // .requestMatchers för get kan vara public, post, put och delete behöver inloggning.
                 // Sedan ska roller tilldelas och autentisering tilldelas för de olika rollerna.
 
-                .csrf(csrf -> csrf.disable())
+                //.csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf
+                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                                .ignoringRequestMatchers("/users/register")
+                        )
+
+
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/csrf-token").permitAll()
+
                         .requestMatchers(HttpMethod.GET, "/books","/authors/lastname/", "/books/page",
                                 "/books/search", "/books/search/author", "books/page").hasRole("USER")// Användare har bara tillgång till vissa sidor.
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()  // Tillåter alla att skapa konto
+                        .requestMatchers(HttpMethod.POST, "/users/register").permitAll()  // Tillåter alla att skapa konto
                         .requestMatchers(HttpMethod.POST, "/loans").hasRole("USER") // En användare kan skapa ett lån.
                         .requestMatchers(HttpMethod.PUT, "/loans/").hasRole("USER") // En användare kan lämna tillbaka sitt lån
                         .anyRequest().hasRole("ADMIN") // Admin har tillgång till alla sidor
                 )
 
-               // .httpBasic(Customizer.withDefaults()) // För att kunna testa i postman
+               //.httpBasic(Customizer.withDefaults()) // För att kunna testa i postman
 
                 .formLogin(Customizer.withDefaults()) // default login
         //.formLogin(form -> form  // Standard inloggning

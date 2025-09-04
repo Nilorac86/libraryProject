@@ -51,7 +51,7 @@ public class UserController {
 
 
     // Lägger till användare genom input i body.
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserDto> addUser(@RequestBody UserRequestDto userRequestDto) {
 
         if (userRequestDto == null) {
