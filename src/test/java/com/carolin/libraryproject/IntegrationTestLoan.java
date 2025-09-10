@@ -103,7 +103,7 @@ public class IntegrationTestLoan {
         Book book = createTestBook(3);
 
         // Act
-        Loan result = loanService.createLoan(user.getId(), book.getId());
+        Loan result = loanService.createLoan(user, book.getId());
 
         //Assert
 
@@ -123,7 +123,7 @@ public class IntegrationTestLoan {
 
         // Act & Assert
         assertThrows(NoAvailableCopiesException.class, () ->{
-            loanService.createLoan(1L, book.getId());
+            loanService.createLoan(user, book.getId());
         });
 
     }

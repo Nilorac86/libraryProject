@@ -1,14 +1,21 @@
 package com.carolin.libraryproject.user;
 
+
 import com.carolin.libraryproject.loan.LoanService;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
+import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.net.URI;
 import java.util.List;
+
 
 @RestController
 @RequestMapping("/users")
@@ -18,11 +25,27 @@ public class UserController {
     private final LoanService loanService;
     private final UserMapper userMapper;
 
+
     public UserController(UserService userService, LoanService loanService, UserMapper userMapper) {
         this.userService = userService;
         this.loanService = loanService;
         this.userMapper = userMapper;
+
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        if (currentUser == null) {
+
+            return ResponseEntity.status(401).build();
+        }
+
+        UserDto userDto = userService.findUserByEmail(currentUser.getUsername());
+
+        return ResponseEntity.ok(userDto);
+
+    }
+
 
     // Hämtar en lista av alla användare returnerar en userDto
     @GetMapping
@@ -52,11 +75,8 @@ public class UserController {
 
     // Lägger till användare genom input i body.
     @PostMapping("/register")
-    public ResponseEntity<UserDto> addUser(@RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
-        if (userRequestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
 
         User user = userMapper.toUserEntity(userRequestDto);
         User savedUser = userService.addUser(user);

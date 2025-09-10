@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.authors;
+package com.carolin.libraryproject.author;
 
 import com.carolin.libraryproject.exceptionHandler.AuthorAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
@@ -28,7 +28,7 @@ public class AuthorService {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
 
         if (authors.isEmpty()) {
-            throw new NoAuthorFoundException("No author found with lastname: " + lastname);
+            throw new NoAuthorFoundException("No author found");
         }
 
         return authors;
@@ -40,8 +40,7 @@ public class AuthorService {
                 .findAuthorByFirstnameAndLastnameIgnoreCase(author.getFirstname(), author.getLastname());
 
         if (optionalAuthor.isPresent()) {
-            throw new AuthorAlreadyExcistException("Author with name: " + author.getFirstname()+ " "
-                    + author.getLastname() + " already exists");
+            throw new AuthorAlreadyExcistException("Author already exists");
         }
 
         return authorRepository.save(author);

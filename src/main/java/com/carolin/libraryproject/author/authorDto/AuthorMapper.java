@@ -1,6 +1,6 @@
-package com.carolin.libraryproject.authors.authorDto;
+package com.carolin.libraryproject.author.authorDto;
 
-import com.carolin.libraryproject.authors.Author;
+import com.carolin.libraryproject.author.Author;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;

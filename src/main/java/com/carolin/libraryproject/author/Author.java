@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.authors;
+package com.carolin.libraryproject.author;
 
 import jakarta.persistence.*;
 

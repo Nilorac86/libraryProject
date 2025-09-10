@@ -1,6 +1,6 @@
 package com.carolin.libraryproject.book;
 
-import com.carolin.libraryproject.authors.Author;
+import com.carolin.libraryproject.author.Author;
 import jakarta.persistence.*;
 
 @Entity

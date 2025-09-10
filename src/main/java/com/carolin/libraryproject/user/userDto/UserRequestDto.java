@@ -1,9 +1,30 @@
 package com.carolin.libraryproject.user.userDto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 public class UserRequestDto {
+
+    @NotBlank(message= "Förnamn får inte vara tomt")
+    @Size(min = 2, max = 64, message = "Förnamnet måste vara mellan 2-50 tecken långt")
     private String firstName;
+
+    @NotBlank(message= "Efternamn får inte vara tomt")
+    @Size(min = 2, max = 64, message = "Efternamnet måste vara mellan 2-64 tecken långt")
     private String lastName;
+
+    @NotBlank(message = "Email får inte vara tomt")
+    @Email(message = "Ogiltig e-postadress")
+    @Size(min = 3, max = 64, message = "E-posten måste vara mellan 3-64 tecken långt")
     private String email;
+
+    @NotBlank(message = "Lösenord krävs")
+    @Size(min = 8, max = 64, message = "Lösenordet måste vara mellan 8-64 tecken långt")
+    @Pattern(
+            regexp = "^(?=.*[a-z])(?=.*[A-Z]).{8,}$",
+            message = "Lösenordet måste vara minst 8 tecken och innehålla minst en stor och en liten bokstav")
     private String password;
 
 

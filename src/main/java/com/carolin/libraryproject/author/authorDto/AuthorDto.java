@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.authors.authorDto;
+package com.carolin.libraryproject.author.authorDto;
 
 
 public class AuthorDto {

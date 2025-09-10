@@ -37,20 +37,20 @@ public class LoanService {
 
     // Skapar ett lån, genom användares id och bokens id. Uppdaterar antal tillgängliga kopior av boken.
     @Transactional
-    public Loan createLoan(Long userId, Long bookId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public Loan createLoan(User loggedInUser, Long bookId) {
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new EntityNotFoundException("User not found"));
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
 
         // Kontroll om boken finns tillgänglig innan lån utförs.
         if (book.getAvailableCopies() <= 0 ){
-            throw new NoAvailableCopiesException("No copies available of the book: " + book.getTitle());
+            throw new NoAvailableCopiesException("No copies available");
         }
 
         Loan loan = new Loan();
-        loan.setUser(user);
+        loan.setUser(loggedInUser);
 
         loan.setBook(book);
 
@@ -67,7 +67,7 @@ public class LoanService {
         List<Loan> loans = loanRepository.findByUserId(userId);
 
         if (loans.isEmpty()) {
-            throw new NoLoanFoundException("No loan found for user: " + userId);
+            throw new NoLoanFoundException("No loans found");
         }
 
         return loanMapper.toDtoList(loans);
@@ -78,10 +78,16 @@ public class LoanService {
     // Återlämning av bok via lånets id. Lägger till dagens datum för retur av lånet
     // samt uppdaterar antalet tillgängliga kopior.
 
-    public void returnBook(Long loanId) {
+    public void returnBook(Long loanId, User loggeedInUser) {
+
+
 
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
+
+        if (!loan.getUser().getId().equals(loggeedInUser.getId())) {
+            throw new SecurityException("You have permission to extend this loan");
+        }
 
         if (loan.getReturnedDate() != null) {
             throw new IllegalStateException ("Book already returned");
@@ -100,12 +106,16 @@ public class LoanService {
 
 
     // Förlänga returdatum på en lånad bok
-    public void extendBook(Long loanId) {
+    public void extendBook(Long loanId, User loggedInUser) {
         Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new EntityNotFoundException("Loan not found with id " + loanId));
+                .orElseThrow(() -> new EntityNotFoundException("Loan not found"));
+
+        if (!loan.getUser().getId().equals(loggedInUser.getId())) {
+            throw new SecurityException("You have permission to extend this loan");
+        }
 
         if (loan.getDueDate().isBefore(LocalDateTime.now())) {
-            throw new LoanExpiredException("Loan with id: " + loanId + " duedate has passed. Loan cannot be extended");
+            throw new LoanExpiredException("Loan duedate has passed. Loan cannot be extended");
         }
 
         if (loan.getReturnedDate() != null) {
@@ -116,6 +126,8 @@ public class LoanService {
         loan.setDueDate(newReturnDate);
         loanRepository.save(loan);
     }
+
+
 
     public List<LoanDto> findAllLoans() {
         List<Loan> loans = loanRepository.findAll();

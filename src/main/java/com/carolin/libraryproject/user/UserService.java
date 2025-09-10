@@ -1,11 +1,7 @@
 package com.carolin.libraryproject.user;
 
 import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
-import com.carolin.libraryproject.exceptionHandler.NotValidEmailException;
-import com.carolin.libraryproject.exceptionHandler.NotValidPasswordException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
-import com.carolin.libraryproject.validation.EmailValidator;
-import com.carolin.libraryproject.validation.PasswordValidator;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,6 +22,7 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+
     // Lista alla användare i dto
     public List<UserDto> findAll() {
 
@@ -39,21 +36,14 @@ public class UserService {
        Optional<User> user = userRepository.findByEmail(email);
 
        return user.map(userMapper::toUserDto).orElseThrow(() -> new UserNotFoundException
-               ("User with email: " + email + " not found"));
+               ("User not found"));
     }
 
 
     // Lägger till användare
     public User addUser(User user) {
 
-        if (!PasswordValidator.isPasswordValid(user.getPassword())) {
-            throw new NotValidPasswordException("Password is not valid: must be at least 8 characters long, " +
-                    "one uppercase letter, and one digit");
-        }
 
-        if (!EmailValidator.isEmailValid(user.getEmail())) {
-            throw new NotValidEmailException("Email is not valid");
-        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new EmailAlreadyExcistException("Email is already in use");
         }

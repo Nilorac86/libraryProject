@@ -1,5 +1,5 @@
 package com.carolin.libraryproject.book;
-import com.carolin.libraryproject.authors.authorDto.AuthorMapper;
+import com.carolin.libraryproject.author.authorDto.AuthorMapper;
 import com.carolin.libraryproject.book.bookDto.BookDto;
 import org.springframework.stereotype.Component;
 import java.util.Collections;

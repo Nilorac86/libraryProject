@@ -1,7 +1,7 @@
 package com.carolin.libraryproject.book;
 
-import com.carolin.libraryproject.authors.Author;
-import com.carolin.libraryproject.authors.AuthorRepository;
+import com.carolin.libraryproject.author.Author;
+import com.carolin.libraryproject.author.AuthorRepository;
 import com.carolin.libraryproject.book.bookDto.BookDto;
 import com.carolin.libraryproject.exceptionHandler.BookAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
@@ -48,7 +48,7 @@ public class BookService {
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
         if (book == null) {
-            throw new EntityNotFoundException("Book: '"+ title + "' not found");
+            throw new EntityNotFoundException("Book not found");
         }
 
         return bookMapper.toDto(book);
