@@ -59,6 +59,8 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+
+
     // Hämtar användare baserat på email som variabel i url sökningen
     @GetMapping("/email/{email}")
     public ResponseEntity<UserDto> findUserByEmail(@PathVariable String email) {
@@ -98,5 +100,6 @@ public class UserController {
 
         return ResponseEntity.ok(loan);
     }
+
 
 }
