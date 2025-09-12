@@ -27,16 +27,6 @@ public class UserServiceImpl implements UserDetailsService {
 
         return new CustomUserDetails(user);
 
-         //Collection<? extends GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRole());
-
-
-       // return org.springframework.security.core.userdetails.User.builder()
-//                .username(user.getEmail())
-//                .password(user.getPassword())
-//                .authorities(user.getRole())
-//                .disabled(!user.isEnabled())
-//                .build();
-
 
     }
 

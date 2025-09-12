@@ -7,7 +7,6 @@ import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +31,7 @@ public class UserController {
         this.userMapper = userMapper;
 
     }
+
 
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
@@ -91,8 +91,8 @@ public class UserController {
 
     // Hämtar användares lån
     @GetMapping("/{userId}/loans")
-    public ResponseEntity<List<LoanDto>> getLoans(@PathVariable Long userId) {
-        List<LoanDto> loan = loanService.findUserLoans(userId);
+    public ResponseEntity<List<LoanDto>> getLoans(@AuthenticationPrincipal CustomUserDetails loggedInUser) {
+        List<LoanDto> loan = loanService.findUserLoans(loggedInUser.getUser());
 
         if (loan.isEmpty()) {
             return ResponseEntity.notFound().build();

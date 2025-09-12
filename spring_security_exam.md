@@ -28,15 +28,15 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Kontrollera att användarnamn inte redan finns~~
 
 ### 4. Formulärskydd och input-validering
-- Aktivera CSRF-skydd på alla formulär
-- Demonstrera att CSRF-skydd fungerar
+- ~~Aktivera CSRF-skydd på alla formulär~~
+- ~~Demonstrera att CSRF-skydd fungerar~~
 - ~~Validera all användarinput på server-sidan~~
 - ~~Förhindra XSS-attacker genom korrekt escaping i templates // bara med frontend~~
 - ~~Implementera längd- och formatvalidering på formulärfält~~
 
 ### 5. Säker felhantering och logging
 - ~~Visa aldrig känslig information i felmeddelanden till användare~~
-- Logga säkerhetsrelaterade händelser (inloggningsförsök, misslyckade försök)
+- ~~Logga säkerhetsrelaterade händelser (inloggningsförsök, misslyckade försök)~~
 - ~~Skapa anpassade felsidor (404, 403, 500) som inte avslöjar systemdetaljer~~
 - Implementera strukturerad loggning för säkerhetshändelser
 
