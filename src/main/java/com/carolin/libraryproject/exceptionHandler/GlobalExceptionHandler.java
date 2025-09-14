@@ -146,7 +146,6 @@ public class GlobalExceptionHandler {
 
 
     // 404
-
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleResourceNotFound(ResourceNotFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());

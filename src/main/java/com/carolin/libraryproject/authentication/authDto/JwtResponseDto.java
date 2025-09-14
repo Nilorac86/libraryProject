@@ -3,11 +3,8 @@ package com.carolin.libraryproject.authentication.authDto;
 public class JwtResponseDto {
 
         private String token;
-
         private String type = "Bearer";
-
         private String username;
-
         private String roles;
 
 

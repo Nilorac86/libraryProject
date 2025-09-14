@@ -1,8 +1,13 @@
 package com.carolin.libraryproject.user;
 
+import com.carolin.libraryproject.event.UserEventMapper;
+import com.carolin.libraryproject.event.UserRegistrationEvent;
+import com.carolin.libraryproject.event.eventDto.UserRegistrationEventDto;
 import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
 import com.carolin.libraryproject.user.userDto.UserDto;
+import com.carolin.libraryproject.user.userDto.UserRequestDto;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +20,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
+        this.eventPublisher = eventPublisher;
     }
 
 
@@ -50,9 +57,15 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+
+        UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(user);
+
+        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto ));
+
+        return savedUser;
+
     }
-
-
 
 }
