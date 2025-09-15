@@ -22,7 +22,7 @@ public class JwtUtils {
     @Value("${app.jwtSecret:mySecretKey}") // Säker nyckel
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationMs:3600000}") // Giltig 1h
+    @Value("${app.jwtExpirationMs:3600000}") // Giltig 24h
     private int jwtExpirationMs;
 
 

@@ -60,7 +60,7 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
 
-        UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(user);
+        UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(savedUser);
 
         eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto ));
 
