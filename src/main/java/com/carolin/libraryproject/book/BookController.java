@@ -1,9 +1,12 @@
 package com.carolin.libraryproject.book;
 
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
@@ -58,24 +61,28 @@ public class BookController {
     }
 
     // Lägger till en ny bok
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<Object> addBook(@RequestBody Book book) {
+    public ResponseEntity<Object> addBook(@Validated @RequestBody BookRequestDto bookRequestDto) {
 
-        if (book == null) {
+
+
+        if (bookRequestDto == null) {
             return ResponseEntity.badRequest().build();
         }
 
         Book savedBook = null;
         try {
-            savedBook = bookService.addBook(book);
+            savedBook = bookService.addBook(bookRequestDto);
         } catch (NoAuthorFoundException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
 
         URI location = URI.create("books/" + savedBook.getId());
 
         return ResponseEntity.created(location).body(savedBook);
     }
+
 
 
     // Hämtar en författares alla böcker genom parameter med författarens efternamn
@@ -92,4 +99,12 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteBook(@RequestParam Long id) {
+        bookService.deleteBookById(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

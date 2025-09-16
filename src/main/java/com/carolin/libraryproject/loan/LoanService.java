@@ -229,4 +229,11 @@ public class LoanService {
         loanRepository.save(loan);
     }
 
+    public void deleteLoan(Long loanId) {
+        if (!loanRepository.existsById(loanId)) {
+            throw new EntityNotFoundException("Loan not found");
+        }
+        loanRepository.deleteById(loanId);
+    }
+
 }

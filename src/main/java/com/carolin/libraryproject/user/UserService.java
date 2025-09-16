@@ -68,4 +68,11 @@ public class UserService {
 
     }
 
+    public void deleteUser(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            userRepository.delete(user.get());
+        }
+    }
+
 }

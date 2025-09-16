@@ -3,13 +3,11 @@ package com.carolin.libraryproject.authentication;
 import com.carolin.libraryproject.authentication.authDto.JwtResponseDto;
 import com.carolin.libraryproject.authentication.authDto.LoginRequestDto;
 import com.carolin.libraryproject.security.CustomUserDetails;
-import com.carolin.libraryproject.user.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,8 +42,5 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponseDto(token,
                 userDetails.getUsername(), role));
     }
-
-
-
 
 }

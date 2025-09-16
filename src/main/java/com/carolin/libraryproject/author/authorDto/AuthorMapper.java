@@ -2,7 +2,6 @@ package com.carolin.libraryproject.author.authorDto;
 
 import com.carolin.libraryproject.author.Author;
 import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
 public class AuthorMapper {
 
     // Mapper författare
-    public AuthorDto toDto(Author author) {
+    public AuthorDto toDto (Author author) {
 
         if (author == null) {
             return null;
@@ -34,6 +33,20 @@ public class AuthorMapper {
         return authors.stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
+    }
+
+    public Author authorToEntity(AuthorRequestDto authorRequestDto) {
+        if (authorRequestDto == null) {
+            return null;
+        }
+
+        Author author = new Author();
+        author.setFirstname(authorRequestDto.getFirstName());
+        author.setLastname(authorRequestDto.getLastName());
+        author.setBirthYear(authorRequestDto.getBirthYear());
+        author.setNationality(authorRequestDto.getNationality());
+        return author;
+
     }
 
 

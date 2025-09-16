@@ -1,6 +1,8 @@
 package com.carolin.libraryproject.book;
+import com.carolin.libraryproject.author.Author;
 import com.carolin.libraryproject.author.authorDto.AuthorMapper;
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import org.springframework.stereotype.Component;
 import java.util.Collections;
 import java.util.List;
@@ -41,5 +43,23 @@ public class BookMapper {
                 .map(this::toDto)
                 .collect(Collectors.toList());
 
+    }
+
+    public Book toEntity(BookRequestDto bookRequestDto) {
+
+        if (bookRequestDto == null) {
+            return null;
+
+        }
+        Book book = new Book();
+        book.setTitle(bookRequestDto.getTitle());
+        book.setPublicationYear(bookRequestDto.getPublicationYear());
+        book.setTotalCopies(bookRequestDto.getTotalCopies());
+
+        Author author = new Author();
+        author.setId(bookRequestDto.getAuthorId());
+        book.setAuthor(author);
+
+        return book;
     }
 }

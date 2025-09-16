@@ -103,4 +103,10 @@ public class UserController {
     }
 
 
+    @DeleteMapping
+    public ResponseEntity<String> deleteUser(String email) {
+        userService.deleteUser(email);
+        return ResponseEntity.noContent().build();
+    }
+
 }
