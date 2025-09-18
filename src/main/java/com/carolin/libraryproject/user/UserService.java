@@ -5,6 +5,7 @@ import com.carolin.libraryproject.event.UserRegistrationEvent;
 import com.carolin.libraryproject.event.eventDto.UserRegistrationEventDto;
 import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
+import com.carolin.libraryproject.loan.LoanRepository;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import org.springframework.context.ApplicationEventPublisher;
@@ -19,13 +20,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final LoanRepository loanRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder,
+    public UserService(UserRepository userRepository, UserMapper userMapper, LoanRepository loanRepository, PasswordEncoder passwordEncoder,
                        ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.loanRepository = loanRepository;
         this.passwordEncoder = passwordEncoder;
         this.eventPublisher = eventPublisher;
     }
@@ -69,11 +72,18 @@ public class UserService {
 
     }
 
-    public void deleteUser(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
-        if (user.isPresent()) {
-            userRepository.delete(user.get());
-        }
-    }
+    public void deleteUser(String email) throws IllegalAccessException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-}
+
+        boolean hasActiveLoans = loanRepository.existsByUserAndReturnedDateIsNull(user);
+
+            if (hasActiveLoans) {
+                throw new IllegalStateException("User have active loans and cannot be deleted");
+            }
+
+            userRepository.delete(user);
+        }
+
+    }

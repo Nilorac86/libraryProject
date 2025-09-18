@@ -52,12 +52,13 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
-    public void deleteAuthor(Long id) {
 
-        if (!authorRepository.existsById(id)) {
+    public void deleteAuthor(Long authorId) {
+
+        if (!authorRepository.existsById(authorId)) {
             throw new NoAuthorFoundException("No author found");
         }
-        authorRepository.deleteById(id);
+        authorRepository.deleteById(authorId);
     }
 }
 

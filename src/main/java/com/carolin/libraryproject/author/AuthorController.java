@@ -67,9 +67,10 @@ public class AuthorController {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
-    public ResponseEntity<String> deleteAuthor(@RequestParam Long id) {
-        authorService.deleteAuthor(id);
+    public ResponseEntity<String> deleteAuthor(@RequestParam Long authorId) {
+        authorService.deleteAuthor(authorId);
         return ResponseEntity.noContent().build();
 
     }

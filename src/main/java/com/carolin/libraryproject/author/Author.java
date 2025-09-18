@@ -1,6 +1,10 @@
 package com.carolin.libraryproject.author;
 
+import com.carolin.libraryproject.book.Book;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "authors")
@@ -23,6 +27,8 @@ public class Author {
     @Column(name = "nationality")
     private String nationality;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Book> books = new ArrayList<>();
 
 
 

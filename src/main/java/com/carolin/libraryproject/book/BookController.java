@@ -104,10 +104,10 @@ public class BookController {
     }
 
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
-    public ResponseEntity<String> deleteBook(@RequestParam Long id) {
-        bookService.deleteBookById(id);
+    public ResponseEntity<String> deleteBook(@RequestParam Long bookId) {
+        bookService.deleteBookById(bookId);
 
         return ResponseEntity.noContent().build();
     }

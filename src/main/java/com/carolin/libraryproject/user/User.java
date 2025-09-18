@@ -45,8 +45,9 @@ public class User {
     private boolean enabled = true;
 
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Loan> loans = new ArrayList<>();
+
 
     //Lägger automatiskt till datum och tid vid registrering
     @PrePersist

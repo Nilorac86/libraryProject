@@ -105,7 +105,7 @@ public class UserController {
 
 
     @DeleteMapping
-    public ResponseEntity<String> deleteUser(String email) {
+    public ResponseEntity<String> deleteUser(@RequestParam String email) throws IllegalAccessException {
         userService.deleteUser(email);
         return ResponseEntity.noContent().build();
     }

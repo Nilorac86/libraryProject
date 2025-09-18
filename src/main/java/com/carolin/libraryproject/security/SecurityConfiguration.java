@@ -47,11 +47,7 @@ public class SecurityConfiguration{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 
-                // .requestMatchers för get kan vara public, post, put och delete behöver inloggning.
-                // Sedan ska roller tilldelas och autentisering tilldelas för de olika rollerna.
-
                 .csrf(csrf -> csrf.disable())
-
 
 
                 .authorizeHttpRequests(auth -> auth
@@ -66,6 +62,7 @@ public class SecurityConfiguration{
                         .requestMatchers(HttpMethod.POST, "/loans").hasRole("USER") // En användare kan skapa ett lån.
                         .requestMatchers(HttpMethod.PUT, "/loans/**").hasRole("USER") // En användare kan lämna tillbaka sitt lån
                         .requestMatchers(HttpMethod.GET, "/loans").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                         .anyRequest().hasRole("ADMIN") // Admin har tillgång till alla sidor
                 )
 
