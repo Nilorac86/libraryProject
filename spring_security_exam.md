@@ -49,7 +49,7 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Generera JWT token vid lyckad inloggning~~
 - ~~Validera JWT tokens för alla skyddade endpoints~~
 - Inkludera användarroller i JWT payload
-- ~~Konfigurera Spring Security att inte använda sessions (stateless)~
+- ~~Konfigurera Spring Security att inte använda sessions (stateless)~~
 - Implementera automatisk token-förnyelse (refresh tokens)
 
 ### 2. Metodbaserad säkerhet

@@ -36,8 +36,8 @@ public class LoanController {
 
 
     // Återlämna lånad bok via lånid i sökväg
-    @PutMapping("/{loanId}/return")
-    public ResponseEntity<String> returnLoan(@PathVariable Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
+    @PutMapping("/return")
+    public ResponseEntity<String> returnLoan(@RequestParam Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
 
         if (loanId == null || loanId <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
@@ -49,8 +49,8 @@ public class LoanController {
 
 
     // Förlänga lån av bok via lånid i sökväg
-    @PutMapping("/{loanId}/extend")
-    public ResponseEntity<String> extendLoan(@PathVariable Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
+    @PutMapping("/extend")
+    public ResponseEntity<String> extendLoan(@RequestParam Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
 
         if (loanId == null || loanId <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
@@ -69,9 +69,5 @@ public class LoanController {
 
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteLoan(Long loanId){
-        loanService.deleteLoan(loanId);
-        return ResponseEntity.noContent().build();
-    }
+
 }

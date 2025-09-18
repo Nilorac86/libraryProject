@@ -34,9 +34,11 @@ public class AuthorController {
         return ResponseEntity.ok(authors);
     }
 
+
+
     // Hämtar författare via efternamn i sökvägen
-    @GetMapping("/lastname/{lastname}")
-    public ResponseEntity<List<Author>> searchAuthorByLastname(@PathVariable String lastname) {
+    @GetMapping("/lastname")
+    public ResponseEntity<List<Author>> searchAuthorByLastname(@RequestParam String lastname) {
         List<Author> authors = authorService.findByLastname(lastname);
 
         if (authors.isEmpty()) {
@@ -55,7 +57,6 @@ public class AuthorController {
         if(author == null) {
         return ResponseEntity.badRequest().build();
         }
-
 
         Author savedAuthor = authorService.addAuthor(author);
         AuthorDto responseDto = authorMapper.toDto(savedAuthor);

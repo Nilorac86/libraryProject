@@ -63,8 +63,8 @@ public class UserController {
 
 
     // Hämtar användare baserat på email som variabel i url sökningen
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDto> findUserByEmail(@PathVariable String email) {
+    @GetMapping("/email")
+    public ResponseEntity<UserDto> findUserByEmail(@RequestParam String email) {
         UserDto user = userService.findUserByEmail(email);
 
 
@@ -91,7 +91,7 @@ public class UserController {
 
 
     // Hämtar användares lån
-    @GetMapping("/{userId}/loans")
+    @GetMapping("/loans")
     public ResponseEntity<List<LoanDto>> getLoans(@AuthenticationPrincipal CustomUserDetails loggedInUser) {
         List<LoanDto> loan = loanService.findUserLoans(loggedInUser.getUser());
 
@@ -101,6 +101,7 @@ public class UserController {
 
         return ResponseEntity.ok(loan);
     }
+
 
 
     @DeleteMapping

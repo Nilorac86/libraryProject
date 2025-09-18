@@ -86,7 +86,7 @@ public class BookService {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
 
         if (books.isEmpty()) {
-            throw new NoAuthorFoundException("No author with name: '" + lastName + "' found");
+            throw new NoAuthorFoundException("No author found");
         }
         return bookMapper.toDtoList(books);
     }

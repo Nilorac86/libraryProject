@@ -35,6 +35,8 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+
+
     // Lista av böcker genom pageable sortering
     @GetMapping("/page")
     public ResponseEntity<Page<BookDto>> getAllBooks(Pageable pageable) {
@@ -59,6 +61,8 @@ public class BookController {
         }
         return ResponseEntity.ok(book);
     }
+
+
 
     // Lägger till en ny bok
     @PreAuthorize("hasRole('ADMIN')")

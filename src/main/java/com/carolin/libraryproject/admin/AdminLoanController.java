@@ -37,8 +37,8 @@ public class AdminLoanController {
     }
 
 
-    @PutMapping("{loanId}/return")
-    public ResponseEntity<String> returnLoan(@PathVariable Long loanId) {
+    @PutMapping("/return")
+    public ResponseEntity<String> returnLoan(@RequestParam Long loanId) {
 
         loanService.returnBookAsAdmin(loanId);
         return  ResponseEntity.ok("Loan returnd by admin");
@@ -47,8 +47,8 @@ public class AdminLoanController {
 
 
 
-    @PutMapping("{loanId}/extend")
-    public ResponseEntity<String> extendLoan(@PathVariable Long loanId) {
+    @PutMapping("/extend")
+    public ResponseEntity<String> extendLoan(@RequestParam Long loanId) {
 
         loanService.extendBookAsAdmin(loanId);
         return  ResponseEntity.ok("Loan extend by admin");
@@ -58,8 +58,8 @@ public class AdminLoanController {
 
 
 
-    @GetMapping("{userId}")
-    public ResponseEntity<List<LoanDto>> getUserLoans(@PathVariable Long userId) {
+    @GetMapping("/users")
+    public ResponseEntity<List<LoanDto>> getUserLoans(@RequestParam Long userId) {
 
         List<LoanDto> loans = loanService.findUserLoansAsAdmin(userId);
         return ResponseEntity.ok(loans);
@@ -69,11 +69,19 @@ public class AdminLoanController {
 
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<LoanDto>> getLoans() {
 
         List<LoanDto> loans = loanService.findAllLoans();
         return ResponseEntity.ok(loans);
 
     }
+
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteLoan(Long loanId){
+        loanService.deleteLoan(loanId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

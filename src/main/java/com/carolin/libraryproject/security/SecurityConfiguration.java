@@ -76,10 +76,10 @@ public class SecurityConfiguration{
 
                .httpBasic(Customizer.withDefaults()) // För att kunna testa i postman
 
-               // .formLogin(Customizer.withDefaults()) // default login
+               //.formLogin(Customizer.withDefaults()) // default login
         //.formLogin(form -> form  // Standard inloggning
                         //.loginPage("/login")  // Om man har en frontend
-                        // .permitAll())
+
 
 
                 .logout(logout -> logout
@@ -90,8 +90,8 @@ public class SecurityConfiguration{
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //                        //.invalidSessionUrl("/login?expired")
-//                        .sessionFixation(sessionFixation -> sessionFixation.changeSessionId())
-//                        .maximumSessions(1)
+//
+//                        .maximumSessions(1).sessionFixation(sessionFixation -> sessionFixation.changeSessionId())
 //                        .maxSessionsPreventsLogin(false)
 
 
@@ -109,6 +109,8 @@ public class SecurityConfiguration{
         return new BCryptPasswordEncoder();
 
     }
+
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

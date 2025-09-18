@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     // JPQL query. En query som inte bryr sig om vilken dialekt databasen har. Men genererar en sql query.
-    @Query("SELECT u FROM User u WHERE u.email = :email") //??? ta bort vid implementering av security ???
+    @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
