@@ -3,6 +3,7 @@ package com.carolin.libraryproject.author;
 import com.carolin.libraryproject.author.authorDto.AuthorDto;
 import com.carolin.libraryproject.author.authorDto.AuthorMapper;
 import com.carolin.libraryproject.author.authorDto.AuthorRequestDto;
+import com.carolin.libraryproject.utils.HtmlSanitizer;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -52,19 +53,26 @@ public class AuthorController {
     // Lägger till en författare
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<AuthorDto> addAuthor(@Validated @RequestBody AuthorRequestDto author) {
+    public ResponseEntity<AuthorDto> addAuthor(@Validated @RequestBody AuthorRequestDto authorRequestDto) {
 
-        if(author == null) {
+        if(authorRequestDto == null) {
         return ResponseEntity.badRequest().build();
         }
 
-        Author savedAuthor = authorService.addAuthor(author);
+
+        authorRequestDto.setFirstName(HtmlSanitizer.cleanAll(authorRequestDto.getFirstName()));
+        authorRequestDto.setLastName(HtmlSanitizer.cleanAll(authorRequestDto.getLastName()));
+        authorRequestDto.setNationality(HtmlSanitizer.cleanAll(authorRequestDto.getNationality()));
+
+
+        Author savedAuthor = authorService.addAuthor(authorRequestDto);
         AuthorDto responseDto = authorMapper.toDto(savedAuthor);
 
         URI location = URI.create("/authors/" + savedAuthor.getId());
 
         return ResponseEntity.created(location).body(responseDto);
     }
+
 
 
     @PreAuthorize("hasRole('ADMIN')")

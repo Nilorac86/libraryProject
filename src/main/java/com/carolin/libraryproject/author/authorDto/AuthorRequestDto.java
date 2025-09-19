@@ -34,26 +34,32 @@ public class AuthorRequestDto {
     }
 
     public String getFirstName() {
+
         return firstName;
     }
 
     public void setFirstName(String firstName) {
+
         this.firstName = firstName;
     }
 
     public String getLastName() {
+
         return lastName;
     }
 
     public void setLastName(String lastName) {
+
         this.lastName = lastName;
     }
 
     public int getBirthYear() {
+
         return birthYear;
     }
 
     public void setBirthYear(int birthYear) {
+
         this.birthYear = birthYear;
     }
 
@@ -62,6 +68,7 @@ public class AuthorRequestDto {
     }
 
     public void setNationality(String nationality) {
+
         this.nationality = nationality;
     }
 

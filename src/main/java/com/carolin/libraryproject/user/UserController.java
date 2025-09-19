@@ -6,6 +6,7 @@ import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
+import com.carolin.libraryproject.utils.HtmlSanitizer;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -80,6 +81,10 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
+        userRequestDto.setFirstName(HtmlSanitizer.cleanAll(userRequestDto.getFirstName()));
+        userRequestDto.setLastName(HtmlSanitizer.cleanAll(userRequestDto.getLastName()));
+        userRequestDto.setEmail(HtmlSanitizer.cleanAll(userRequestDto.getEmail()));
+        userRequestDto.setPassword(HtmlSanitizer.cleanAll(userRequestDto.getPassword()));
 
         User user = userMapper.toUserEntity(userRequestDto);
         User savedUser = userService.addUser(user);

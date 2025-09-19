@@ -3,6 +3,7 @@ package com.carolin.libraryproject.book;
 import com.carolin.libraryproject.book.bookDto.BookDto;
 import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
+import com.carolin.libraryproject.utils.HtmlSanitizer;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,9 +21,13 @@ public class BookController {
 
     private final BookService bookService;
 
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
+
+
+
 
     // Lista av alla böcker
     @GetMapping
@@ -69,6 +74,7 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Object> addBook(@Validated @RequestBody BookRequestDto bookRequestDto) {
 
+        bookRequestDto.setTitle(HtmlSanitizer.cleanAll(bookRequestDto.getTitle()));
 
 
         if (bookRequestDto == null) {

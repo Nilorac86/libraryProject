@@ -73,7 +73,7 @@ public class SecurityConfiguration{
 
                .httpBasic(Customizer.withDefaults()) // För att kunna testa i postman
 
-               //.formLogin(Customizer.withDefaults()) // default login
+              // .formLogin(Customizer.withDefaults()) // default login
         //.formLogin(form -> form  // Standard inloggning
                         //.loginPage("/login")  // Om man har en frontend
 
