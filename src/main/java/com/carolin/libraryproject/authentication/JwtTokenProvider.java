@@ -15,22 +15,23 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
-public class JwtUtils {
+public class JwtTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Value("${app.jwtSecret:mySecretKey}") // Säker nyckel
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationMs:3600000}") // Giltig 24h
+    @Value("3600000") // Giltig 1h
     private int jwtExpirationMs;
 
 
-
+// Tar en inloggad användare och genererar token
     public String generateToken(Authentication authentication) {
 
        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
+       // Returnerar en JWT sträng.
        return Jwts.builder()
                .setSubject(userDetails.getUsername())
                .setIssuedAt(new Date())
@@ -41,6 +42,7 @@ public class JwtUtils {
 
 
 
+    // Låser upp token med hemlig nyckel
     public String getUsernameFromToken(String token) {
 
         return Jwts.parser()
@@ -51,7 +53,7 @@ public class JwtUtils {
     }
 
 
-    // Validering av token med try, catch exceptions
+    // Validering av token med returnerar token true om den är validerad.
     public boolean validateToken(String token) {
 
         try{

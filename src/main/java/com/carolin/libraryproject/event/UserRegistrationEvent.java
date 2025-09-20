@@ -7,7 +7,8 @@ public class UserRegistrationEvent extends ApplicationEvent {
 
     private final UserRegistrationEventDto userData;
 
-    public UserRegistrationEvent(Object source, UserRegistrationEventDto userData ) {
+
+    public UserRegistrationEvent(Object source, UserRegistrationEventDto userData) {
         super(source);
         this.userData = userData;
 
@@ -16,5 +17,6 @@ public class UserRegistrationEvent extends ApplicationEvent {
     public UserRegistrationEventDto getUserData() {
         return userData;
     }
+
 
 }

@@ -9,13 +9,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 
+// Klass som används när autentisering krävs men det inte finns någon token eller om token är ogiltig
 @Component
-public class AuthEntryPointJwt implements AuthenticationEntryPoint {
+public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+
+    // Skickar respons om användaren inte är auktoriserad.
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-
 
 
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

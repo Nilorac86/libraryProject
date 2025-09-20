@@ -58,7 +58,7 @@ public class AdminLoanController {
 
 
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     public ResponseEntity<List<LoanDto>> getUserLoans(@RequestParam Long userId) {
 
         List<LoanDto> loans = loanService.findUserLoansAsAdmin(userId);
@@ -69,7 +69,7 @@ public class AdminLoanController {
 
 
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<LoanDto>> getLoans() {
 
         List<LoanDto> loans = loanService.findAllLoans();

@@ -66,7 +66,7 @@ public class UserService {
 
         UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(savedUser);
 
-        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto ));
+        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto));
 
         return savedUser;
 

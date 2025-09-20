@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.security;
+package com.carolin.libraryproject.authentication;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +15,8 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     Logger logger = LoggerFactory.getLogger(CustomAccessDeniedHandler.class);
 
+
+    // Hanterar 403 och ger respons till användaren.
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,

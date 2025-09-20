@@ -25,7 +25,7 @@ public class UserRegistrationEventListener {
       logData.put("email", data.getEmail());
       logData.put("role", data.getRole());
       logData.put("regiseredAt", data.getRegisteredAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
+      
       logger.info("User registered: {}", logData);
    }
 
