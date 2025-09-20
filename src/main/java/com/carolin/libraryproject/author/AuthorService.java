@@ -1,5 +1,7 @@
-package com.carolin.libraryproject.authors;
+package com.carolin.libraryproject.author;
 
+import com.carolin.libraryproject.author.authorDto.AuthorMapper;
+import com.carolin.libraryproject.author.authorDto.AuthorRequestDto;
 import com.carolin.libraryproject.exceptionHandler.AuthorAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import org.springframework.stereotype.Service;
@@ -11,10 +13,12 @@ import java.util.Optional;
 public class AuthorService {
 
     private final AuthorRepository authorRepository;
+    private final AuthorMapper authorMapper;
 
-    public AuthorService(AuthorRepository authorRepository) {
+
+    public AuthorService(AuthorRepository authorRepository, AuthorMapper authorMapper) {
         this.authorRepository = authorRepository;
-
+        this.authorMapper = authorMapper;
     }
 
     // Hämtar alla författare
@@ -28,23 +32,33 @@ public class AuthorService {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
 
         if (authors.isEmpty()) {
-            throw new NoAuthorFoundException("No author found with lastname: " + lastname);
+            throw new NoAuthorFoundException("No author found");
         }
 
         return authors;
     }
 
-    public Author addAuthor(Author author) {
+    public Author addAuthor(AuthorRequestDto authorRequestDto) {
+
+        Author author = authorMapper.authorToEntity(authorRequestDto);
 
         Optional<Author> optionalAuthor = authorRepository
                 .findAuthorByFirstnameAndLastnameIgnoreCase(author.getFirstname(), author.getLastname());
 
         if (optionalAuthor.isPresent()) {
-            throw new AuthorAlreadyExcistException("Author with name: " + author.getFirstname()+ " "
-                    + author.getLastname() + " already exists");
+            throw new AuthorAlreadyExcistException("Author already exists");
         }
 
         return authorRepository.save(author);
+    }
+
+
+    public void deleteAuthor(Long authorId) {
+
+        if (!authorRepository.existsById(authorId)) {
+            throw new NoAuthorFoundException("No author found");
+        }
+        authorRepository.deleteById(authorId);
     }
 }
 

@@ -73,7 +73,7 @@ public class loanServiceUnitTest {
 
         //Act - Kör metoden som ska testas
 
-        Loan createdLoan = loanService.createLoan(userId, bookId);
+        Loan createdLoan = loanService.createLoan(user, bookId);
 
         //Assert - Kontroll att metoden fungerar som den ska.
 

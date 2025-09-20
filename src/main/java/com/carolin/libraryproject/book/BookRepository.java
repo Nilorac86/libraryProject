@@ -23,6 +23,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
              "FROM books " +
              "JOIN authors ON books.author_id = authors.author_id  " +
              "WHERE LOWER(authors.last_name)  = LOWER(:last_name)",
+
              nativeQuery = true )
      List<Book> searchBookByAuthorByLastname(@Param("last_name") String lastname);
 

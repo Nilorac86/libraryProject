@@ -1,10 +1,9 @@
 package com.carolin.libraryproject.loan;
 
-import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.book.BookMapper;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
 import com.carolin.libraryproject.user.UserMapper;
 import org.springframework.stereotype.Component;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,10 +11,10 @@ import java.util.stream.Collectors;
 @Component
 public class LoanMapper {
 
-    private BookDto.BookMapper bookMapper;
+    private BookMapper bookMapper;
     private UserMapper userMapper;
 
-    public LoanMapper(BookDto.BookMapper bookMapper, UserMapper userMapper) {
+    public LoanMapper(BookMapper bookMapper, UserMapper userMapper) {
         this.bookMapper = bookMapper;
         this.userMapper = userMapper;
     }

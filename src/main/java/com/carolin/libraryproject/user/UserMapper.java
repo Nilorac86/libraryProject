@@ -55,4 +55,3 @@ public class UserMapper {
 }
 
 
-// göra en endpoint där man kan se de tio senaste lånen och endast göra den tillgänglig för admin ex.

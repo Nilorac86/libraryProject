@@ -1,8 +1,9 @@
 package com.carolin.libraryproject.book;
 
-import com.carolin.libraryproject.authors.Author;
-import com.carolin.libraryproject.authors.AuthorRepository;
+import com.carolin.libraryproject.author.Author;
+import com.carolin.libraryproject.author.AuthorRepository;
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import com.carolin.libraryproject.exceptionHandler.BookAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,9 +23,9 @@ public class BookService {
     private AuthorRepository authorRepository;
 
     private final BookRepository bookRepository;
-    private final BookDto.BookMapper bookMapper;
+    private final BookMapper bookMapper;
 
-    public BookService(BookRepository bookRepository, BookDto.BookMapper bookMapper) {
+    public BookService(BookRepository bookRepository, BookMapper bookMapper) {
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
     }
@@ -48,7 +49,7 @@ public class BookService {
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
         if (book == null) {
-            throw new EntityNotFoundException("Book: '"+ title + "' not found");
+            throw new EntityNotFoundException("Book not found");
         }
 
         return bookMapper.toDto(book);
@@ -56,17 +57,21 @@ public class BookService {
 
 
     // Lägger till en bok
-    public Book addBook(Book book) throws NoAuthorFoundException {
+    public Book addBook(BookRequestDto bookRequestDto) throws NoAuthorFoundException {
+
+
+        Book book = bookMapper.toEntity(bookRequestDto);
+
 
         Long authorId = book.getAuthor().getId();
+
         Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> new NoAuthorFoundException("No author found with id: " + authorId));
+                .orElseThrow(() -> new NoAuthorFoundException("Author not found"));
         book.setAuthor(author);
 
         Optional<Book> bookOptional = bookRepository.findByTitleAndAuthorId(book.getTitle(), authorId);
         if (bookOptional.isPresent()) {
-            throw new BookAlreadyExcistException("Book: '" + book.getTitle()+
-                    "' already exist with author: " + author.getFirstname() + " " + author.getLastname());
+            throw new BookAlreadyExcistException("This book already exists for the given author.");
         }
 
             bookRepository.save(book);
@@ -81,10 +86,19 @@ public class BookService {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
 
         if (books.isEmpty()) {
-            throw new NoAuthorFoundException("No author with name: '" + lastName + "' found");
+            throw new NoAuthorFoundException("No author found");
         }
         return bookMapper.toDtoList(books);
     }
 
+    public void deleteBookById(Long bookId){
+
+        if (!bookRepository.existsById(bookId)) {
+            throw new EntityNotFoundException("Book not found");
+        }
+
+        bookRepository.deleteById(bookId);
+
+    }
 
 }

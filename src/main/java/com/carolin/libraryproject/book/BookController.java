@@ -1,9 +1,13 @@
 package com.carolin.libraryproject.book;
 
 import com.carolin.libraryproject.book.bookDto.BookDto;
+import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
+import com.carolin.libraryproject.utils.HtmlSanitizer;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
@@ -17,9 +21,13 @@ public class BookController {
 
     private final BookService bookService;
 
+
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
+
+
+
 
     // Lista av alla böcker
     @GetMapping
@@ -31,6 +39,8 @@ public class BookController {
         }
         return ResponseEntity.ok(books);
     }
+
+
 
     // Lista av böcker genom pageable sortering
     @GetMapping("/page")
@@ -57,25 +67,32 @@ public class BookController {
         return ResponseEntity.ok(book);
     }
 
-    // Lägger till en ny bok
-    @PostMapping
-    public ResponseEntity<Object> addBook(@RequestBody Book book) {
 
-        if (book == null) {
+
+    // Lägger till en ny bok
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<Object> addBook(@Validated @RequestBody BookRequestDto bookRequestDto) {
+
+        bookRequestDto.setTitle(HtmlSanitizer.cleanAll(bookRequestDto.getTitle()));
+
+
+        if (bookRequestDto == null) {
             return ResponseEntity.badRequest().build();
         }
 
         Book savedBook = null;
         try {
-            savedBook = bookService.addBook(book);
+            savedBook = bookService.addBook(bookRequestDto);
         } catch (NoAuthorFoundException e) {
-            throw new RuntimeException(e);
+            throw e;
         }
 
         URI location = URI.create("books/" + savedBook.getId());
 
         return ResponseEntity.created(location).body(savedBook);
     }
+
 
 
     // Hämtar en författares alla böcker genom parameter med författarens efternamn
@@ -92,4 +109,12 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping
+    public ResponseEntity<String> deleteBook(@RequestParam Long bookId) {
+        bookService.deleteBookById(bookId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

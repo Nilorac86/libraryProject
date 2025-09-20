@@ -1,15 +1,23 @@
 package com.carolin.libraryproject.user;
 
+
 import com.carolin.libraryproject.loan.LoanService;
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
+import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
+import com.carolin.libraryproject.utils.HtmlSanitizer;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.net.URI;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -18,11 +26,28 @@ public class UserController {
     private final LoanService loanService;
     private final UserMapper userMapper;
 
+
     public UserController(UserService userService, LoanService loanService, UserMapper userMapper) {
         this.userService = userService;
         this.loanService = loanService;
         this.userMapper = userMapper;
+
     }
+
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
+        if (currentUser == null) {
+
+            return ResponseEntity.status(401).build();
+        }
+
+        UserDto userDto = userService.findUserByEmail(currentUser.getUsername());
+
+        return ResponseEntity.ok(userDto);
+
+    }
+
 
     // Hämtar en lista av alla användare returnerar en userDto
     @GetMapping
@@ -36,9 +61,11 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
+
+
     // Hämtar användare baserat på email som variabel i url sökningen
-    @GetMapping("/email/{email}")
-    public ResponseEntity<UserDto> findUserByEmail(@PathVariable String email) {
+    @GetMapping("/email")
+    public ResponseEntity<UserDto> findUserByEmail(@RequestParam String email) {
         UserDto user = userService.findUserByEmail(email);
 
 
@@ -51,12 +78,13 @@ public class UserController {
 
 
     // Lägger till användare genom input i body.
-    @PostMapping
-    public ResponseEntity<UserDto> addUser(@RequestBody UserRequestDto userRequestDto) {
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto) {
 
-        if (userRequestDto == null) {
-            return ResponseEntity.badRequest().build();
-        }
+        userRequestDto.setFirstName(HtmlSanitizer.cleanAll(userRequestDto.getFirstName()));
+        userRequestDto.setLastName(HtmlSanitizer.cleanAll(userRequestDto.getLastName()));
+        userRequestDto.setEmail(HtmlSanitizer.cleanAll(userRequestDto.getEmail()));
+        userRequestDto.setPassword(HtmlSanitizer.cleanAll(userRequestDto.getPassword()));
 
         User user = userMapper.toUserEntity(userRequestDto);
         User savedUser = userService.addUser(user);
@@ -68,15 +96,23 @@ public class UserController {
 
 
     // Hämtar användares lån
-    @GetMapping("/{userId}/loans")
-    public ResponseEntity<List<LoanDto>> getLoans(@PathVariable Long userId) {
-        List<LoanDto> loan = loanService.findUserLoans(userId);
+    @GetMapping("/loans")
+    public ResponseEntity<List<LoanDto>> getLoans(@AuthenticationPrincipal CustomUserDetails loggedInUser) {
+        List<LoanDto> loan = loanService.findUserLoans(loggedInUser.getUser());
 
         if (loan.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(loan);
+    }
+
+
+
+    @DeleteMapping
+    public ResponseEntity<String> deleteUser(@RequestParam String email) throws IllegalAccessException {
+        userService.deleteUser(email);
+        return ResponseEntity.noContent().build();
     }
 
 }

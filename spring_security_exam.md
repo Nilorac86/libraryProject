@@ -6,38 +6,38 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 ## Grundkrav för Godkänt (G)
 
 ### 1. Inloggning med databas
-- Skapa inloggning med användarnamn och lösenord
-- Spara användare och lösenord i databasen
-- Användare kan logga in och ut
-- Använd sessions (som Spring Security gör automatiskt)
+-  ~~Skapa inloggning med användarnamn och lösenord~~
+- ~~Spara användare och lösenord i databasen~~
+- ~~Användare kan logga in och ut~~
+- ~~Använd sessions (som Spring Security gör automatiskt)~~
 
 ### 2. Roller och åtkomstkontroll
-- Skapa minst 2 roller (USER och ADMIN)
-- Olika sidor kräver olika roller (vissa bara för inloggade, andra bara för admins)
-- Spara roller i databasen och tilldela till användare
-- Skydda minst 3 sidor baserat på roller/inloggning
-- Visa olika innehåll beroende på användarens roll och inloggningsstatus
-- Omdirigera till inloggningssidan vid obehörig åtkomst
+- ~~Skapa minst 2 roller (USER och ADMIN)~~
+- ~~Olika sidor kräver olika roller (vissa bara för inloggade, andra bara för admins)~~
+- ~~Spara roller i databasen och tilldela till användare~~
+- ~~Skydda minst 3 sidor baserat på roller/inloggning~~
+- ~~Visa olika innehåll beroende på användarens roll och inloggningsstatus~~
+- ~~Omdirigera till inloggningssidan vid obehörig åtkomst // frontend~~
 
 ### 3. Säkra lösenord och registrering
-- Kryptera lösenord med BCrypt
-- Spara aldrig lösenord i klartext
-- Implementera lösenordspolicy (minst 8 tecken, kombinera bokstäver och siffror)
-- Skapa registreringsfunktion för nya användare med validering
-- Nya användare får automatiskt USER-roll
-- Kontrollera att användarnamn inte redan finns
+- ~~Kryptera lösenord med BCrypt~~
+- ~~Spara aldrig lösenord i klartext~~
+- ~~Implementera lösenordspolicy (minst 8 tecken, kombinera bokstäver och siffror)~~
+- ~~Skapa registreringsfunktion för nya användare med validering~~
+- ~~Nya användare får automatiskt USER-roll~~
+- ~~Kontrollera att användarnamn inte redan finns~~
 
 ### 4. Formulärskydd och input-validering
-- Aktivera CSRF-skydd på alla formulär
-- Demonstrera att CSRF-skydd fungerar
-- Validera all användarinput på server-sidan
-- Förhindra XSS-attacker genom korrekt escaping i templates
-- Implementera längd- och formatvalidering på formulärfält
+- ~~Aktivera CSRF-skydd på alla formulär~~
+- ~~Demonstrera att CSRF-skydd fungerar~~
+- ~~Validera all användarinput på server-sidan~~
+- ~~Förhindra XSS-attacker genom korrekt escaping i templates // bara med frontend~~
+- ~~Implementera längd- och formatvalidering på formulärfält~~
 
 ### 5. Säker felhantering och logging
-- Visa aldrig känslig information i felmeddelanden till användare
-- Logga säkerhetsrelaterade händelser (inloggningsförsök, misslyckade försök)
-- Skapa anpassade felsidor (404, 403, 500) som inte avslöjar systemdetaljer
+- ~~Visa aldrig känslig information i felmeddelanden till användare~~
+- ~~Logga säkerhetsrelaterade händelser (inloggningsförsök, misslyckade försök)~~
+- ~~Skapa anpassade felsidor (404, 403, 500) som inte avslöjar systemdetaljer~~
 - Implementera strukturerad loggning för säkerhetshändelser
 
 ## Krav för Väl Godkänt (VG)
@@ -45,11 +45,11 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 **Alla G-krav + följande:**
 
 ### 1. JWT tokens istället för sessions
-- Ersätt sessions med JWT tokens
-- Generera JWT token vid lyckad inloggning
-- Validera JWT tokens för alla skyddade endpoints
+- ~~Ersätt sessions med JWT tokens~~
+- ~~Generera JWT token vid lyckad inloggning~~
+- ~~Validera JWT tokens för alla skyddade endpoints~~
 - Inkludera användarroller i JWT payload
-- Konfigurera Spring Security att inte använda sessions (stateless)
+- ~~Konfigurera Spring Security att inte använda sessions (stateless)~~
 - Implementera automatisk token-förnyelse (refresh tokens)
 
 ### 2. Metodbaserad säkerhet

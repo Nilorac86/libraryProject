@@ -1,12 +1,14 @@
 package com.carolin.libraryproject.user;
 
+import com.carolin.libraryproject.event.UserEventMapper;
+import com.carolin.libraryproject.event.UserRegistrationEvent;
+import com.carolin.libraryproject.event.eventDto.UserRegistrationEventDto;
 import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
-import com.carolin.libraryproject.exceptionHandler.NotValidEmailException;
-import com.carolin.libraryproject.exceptionHandler.NotValidPasswordException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
-import com.carolin.libraryproject.validation.EmailValidator;
-import com.carolin.libraryproject.validation.PasswordValidator;
+import com.carolin.libraryproject.loan.LoanRepository;
 import com.carolin.libraryproject.user.userDto.UserDto;
+import com.carolin.libraryproject.user.userDto.UserRequestDto;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +20,19 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final LoanRepository loanRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, LoanRepository loanRepository, PasswordEncoder passwordEncoder,
+                       ApplicationEventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.loanRepository = loanRepository;
         this.passwordEncoder = passwordEncoder;
+        this.eventPublisher = eventPublisher;
     }
+
 
     // Lista alla användare i dto
     public List<UserDto> findAll() {
@@ -39,30 +47,43 @@ public class UserService {
        Optional<User> user = userRepository.findByEmail(email);
 
        return user.map(userMapper::toUserDto).orElseThrow(() -> new UserNotFoundException
-               ("User with email: " + email + " not found"));
+               ("User not found"));
     }
 
 
     // Lägger till användare
     public User addUser(User user) {
 
-        if (!PasswordValidator.isPasswordValid(user.getPassword())) {
-            throw new NotValidPasswordException("Password is not valid: must be at least 8 characters long, " +
-                    "one uppercase letter, and one digit");
-        }
 
-        if (!EmailValidator.isEmailValid(user.getEmail())) {
-            throw new NotValidEmailException("Email is not valid");
-        }
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new EmailAlreadyExcistException("Email is already in use");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+
+        UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(savedUser);
+
+        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto));
+
+        return savedUser;
+
     }
 
+    public void deleteUser(String email) throws IllegalAccessException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
 
-}
+        boolean hasActiveLoans = loanRepository.existsByUserAndReturnedDateIsNull(user);
+
+            if (hasActiveLoans) {
+                throw new IllegalStateException("User have active loans and cannot be deleted");
+            }
+
+            userRepository.delete(user);
+        }
+
+    }
