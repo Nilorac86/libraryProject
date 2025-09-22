@@ -1,13 +1,12 @@
 package com.carolin.libraryproject.user;
 
-import com.carolin.libraryproject.event.UserEventMapper;
-import com.carolin.libraryproject.event.UserRegistrationEvent;
-import com.carolin.libraryproject.event.eventDto.UserRegistrationEventDto;
+import com.carolin.libraryproject.event.userRegistrationEvent.UserRegistrationEventMapper;
+import com.carolin.libraryproject.event.userRegistrationEvent.UserRegistrationEvent;
+import com.carolin.libraryproject.event.userRegistrationEvent.UserRegistrationEventData;
 import com.carolin.libraryproject.exceptionHandler.EmailAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
 import com.carolin.libraryproject.loan.LoanRepository;
 import com.carolin.libraryproject.user.userDto.UserDto;
-import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -52,7 +51,7 @@ public class UserService {
 
 
     // Lägger till användare
-    public User addUser(User user) {
+    public User addUser(User user, String clientIp) {
 
 
         if (userRepository.existsByEmail(user.getEmail())) {
@@ -60,13 +59,10 @@ public class UserService {
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         User savedUser = userRepository.save(user);
+        UserRegistrationEventData userEventDto = UserRegistrationEventMapper.toUserRegistrationData(savedUser);
 
-
-        UserRegistrationEventDto userEventDto = UserEventMapper.toUserRegistrationEventDto(savedUser);
-
-        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto));
+        eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto, clientIp));
 
         return savedUser;
 

@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -16,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 // OncePerRequestFilter garanterar att den bara körs engång
 @Component
@@ -45,13 +48,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String jwt = parseJwt(request);
             if (jwt != null && !tokenBlacklistService.isBlacklisted(jwt) && jwtUtilis.validateToken(jwt)) {
                 String username = jwtUtilis.getUsernameFromToken(jwt);
+                String role = jwtUtilis.getRoleFromToken(jwt);
+
+                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(role);
 
                 // Hämtar användarens uppgifter
                 CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
 
+
                 // Skapar ett authentication objekt för att veta vem som är inloggad och vilken roll.
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken
-                        (userDetails, null, userDetails.getAuthorities());
+                        (userDetails, null, List.of(grantedAuthority));
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 

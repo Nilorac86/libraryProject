@@ -30,6 +30,7 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
+
     // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
     public Page<BookDto> getAllBooks(Pageable pageable) {
 

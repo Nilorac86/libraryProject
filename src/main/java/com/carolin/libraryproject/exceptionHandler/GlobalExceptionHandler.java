@@ -5,11 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.security.access.AccessDeniedException;
 
+import javax.security.auth.login.AccountLockedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,22 @@ public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     // ################# CUSTOM EXCEPTION HANDLERS ###########################################
+
+    // 403 Forbidden för permanent låst konto
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<Map<String, String>> handleAccountLocked(AccountLockedException ex) {
+        log.warn("Account locked: {}", ex.getMessage());
+        Map<String, String> errorResponse = Map.of("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentials(BadCredentialsException ex) {
+        log.warn("Invalid login attempt: {}", ex.getMessage());
+        Map<String, String> errorResponse = Map.of("error", "Failed to login");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
 
 
     // 400 Bad request
@@ -107,29 +126,18 @@ public class GlobalExceptionHandler {
 
 
 
-    // 409 Conflict
-    @ExceptionHandler(NotValidPasswordException.class)
-    public ResponseEntity<Map<String, String>> handleNotValidPassword(NotValidPasswordException ex){
-        log.warn("Password not valid : {}", ex.getMessage());
-        Map<String, String> errorResponse = Map.of("error", "Password not valid");
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-    }
-
-
-
-    // 409 Conflict
-    @ExceptionHandler(NotValidEmailException.class)
-    public ResponseEntity<Map<String, String>> handleNotValidEmail(NotValidEmailException ex) {
-        log.warn("Email not valid: {}", ex.getMessage());
-        Map<String, String> errorResponse = Map.of(
-                "error", "Email is not in a valid format"
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
-    }
-
-
-
 // ########################### GENERELLA EXCEPTIONS ######################################
+
+    // 403 när användaren är blockad pga för många inloggnings försök.
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Map<String, String>> handleDisabledUser(DisabledException ex) {
+        Map<String, String> errorResponse = Map.of(
+                "error","Your account is temporarily locked due to too many failed login attempts. " +
+                        "Please try again later.");
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    }
+
 
 
     // 403 forbidden. Användaren saknar behörighet
@@ -169,6 +177,8 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
+
+
 }
 
 

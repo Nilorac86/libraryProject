@@ -7,6 +7,7 @@ import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import com.carolin.libraryproject.utils.HtmlSanitizer;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -79,7 +80,9 @@ public class UserController {
 
     // Lägger till användare genom input i body.
     @PostMapping("/register")
-    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto, HttpServletRequest request) {
+
+        String clientIp = request.getRemoteAddr();
 
         userRequestDto.setFirstName(HtmlSanitizer.cleanAll(userRequestDto.getFirstName()));
         userRequestDto.setLastName(HtmlSanitizer.cleanAll(userRequestDto.getLastName()));
@@ -87,7 +90,7 @@ public class UserController {
         userRequestDto.setPassword(HtmlSanitizer.cleanAll(userRequestDto.getPassword()));
 
         User user = userMapper.toUserEntity(userRequestDto);
-        User savedUser = userService.addUser(user);
+        User savedUser = userService.addUser(user, clientIp);
         UserDto userDto = userMapper.toUserDto(savedUser);
 
         URI location = URI.create("/users/" + savedUser.getId());

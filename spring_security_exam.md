@@ -38,7 +38,7 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Visa aldrig känslig information i felmeddelanden till användare~~
 - ~~Logga säkerhetsrelaterade händelser (inloggningsförsök, misslyckade försök)~~
 - ~~Skapa anpassade felsidor (404, 403, 500) som inte avslöjar systemdetaljer~~
-- Implementera strukturerad loggning för säkerhetshändelser
+- ~~Implementera strukturerad loggning för säkerhetshändelser~~
 
 ## Krav för Väl Godkänt (VG)
 
@@ -48,19 +48,19 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Ersätt sessions med JWT tokens~~
 - ~~Generera JWT token vid lyckad inloggning~~
 - ~~Validera JWT tokens för alla skyddade endpoints~~
-- Inkludera användarroller i JWT payload
+- ~~Inkludera användarroller i JWT payload~~
 - ~~Konfigurera Spring Security att inte använda sessions (stateless)~~
 - Implementera automatisk token-förnyelse (refresh tokens)
 
 ### 2. Metodbaserad säkerhet
-- Använd @PreAuthorize-annotationer för att skydda service-metoder
+- ~~Använd @PreAuthorize-annotationer för att skydda service-metoder~~
 - Implementera rollbaserad kontroll på affärslogik-nivå
 - Skydda REST API-endpoints med detaljerad auktorisering
 - Demonstrera både roll- och objektbaserad åtkomskontroll
 
 ### 3. Avancerat attack-skydd
-- Implementera rate limiting för inloggningsförsök (max 5 försök per minut)
-- Account lockout efter upprepade misslyckade inloggningar
+- ~~Implementera rate limiting för inloggningsförsök (max 5 försök per minut)~
+- ~~Account lockout efter upprepade misslyckade inloggningar~~
 - Konfigurera säkra HTTP-headers (HSTS, X-Frame-Options, Content Security Policy)
 - Implementera session/token timeout med automatisk utloggning
 - Skydd mot brute force-attacker

@@ -53,8 +53,8 @@ public class SecurityConfiguration{
 
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()  // Tillåter alla att skapa konto
-                        .requestMatchers(HttpMethod.GET, "/books","/authors/lastname/", "/books/page",
-                                "/books/search", "/books/search/author", "/books/page", "/authors")
+                        .requestMatchers(HttpMethod.GET, "/books/**","/authors/lastname/", "/books/page",
+                                "/books/search", "/books/search/author", "/authors")
                         .hasAnyRole("USER", "ADMIN")// Användare har bara tillgång till vissa sidor.
                         .requestMatchers(HttpMethod.POST, "/authors", "/books").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/loans").hasRole("USER") // En användare kan skapa ett lån.

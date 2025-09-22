@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -30,10 +31,12 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication) {
 
        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+       String role = userDetails.getAuthorities().iterator().next().getAuthority();
 
        // Returnerar en JWT sträng.
        return Jwts.builder()
                .setSubject(userDetails.getUsername())
+               .claim("role", role)
                .setIssuedAt(new Date())
                .setExpiration(new Date(System.currentTimeMillis()+ jwtExpirationMs))
                .signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -50,6 +53,16 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+
+    }
+
+    public String getRoleFromToken(String token) {
+
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("role", String.class);
     }
 
 
