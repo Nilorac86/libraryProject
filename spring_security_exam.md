@@ -50,25 +50,25 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Validera JWT tokens för alla skyddade endpoints~~
 - ~~Inkludera användarroller i JWT payload~~
 - ~~Konfigurera Spring Security att inte använda sessions (stateless)~~
-- Implementera automatisk token-förnyelse (refresh tokens)
+- ~~Implementera automatisk token-förnyelse (refresh tokens)~~
 
 ### 2. Metodbaserad säkerhet
 - ~~Använd @PreAuthorize-annotationer för att skydda service-metoder~~
-- Implementera rollbaserad kontroll på affärslogik-nivå
-- Skydda REST API-endpoints med detaljerad auktorisering
-- Demonstrera både roll- och objektbaserad åtkomskontroll
+- ~~Implementera rollbaserad kontroll på affärslogik-nivå~~
+- ~~Skydda REST API-endpoints med detaljerad auktorisering~~
+- ~~Demonstrera både roll- och objektbaserad åtkomskontroll~~
 
 ### 3. Avancerat attack-skydd
-- ~~Implementera rate limiting för inloggningsförsök (max 5 försök per minut)~
+- ~~Implementera rate limiting för inloggningsförsök (max 5 försök per minut)~~
 - ~~Account lockout efter upprepade misslyckade inloggningar~~
 - Konfigurera säkra HTTP-headers (HSTS, X-Frame-Options, Content Security Policy)
-- Implementera session/token timeout med automatisk utloggning
-- Skydd mot brute force-attacker
+- ~~Implementera session/token timeout med automatisk utloggning~~
+- ~~Skydd mot brute force-attacker~~
 
 ### 4. Databas- och API-säkerhet
-- Säkerställ att JPA/Hibernate förhindrar SQL injection
-- Konfigurera databas med begränsad användarrättigheter
-- Kryptera känslig data utöver lösenord (t.ex. personnummer)
+- ~~Säkerställ att JPA/Hibernate förhindrar SQL injection~~
+- ~~Konfigurera databas med begränsad användarrättigheter~~
+- ~~Kryptera känslig data utöver lösenord (t.ex. personnummer)~~
 - CORS-konfiguration för säkra cross-origin requests
 - Input sanitization för JSON/XML data i REST API
 - API rate limiting per endpoint

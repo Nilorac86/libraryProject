@@ -9,6 +9,7 @@ import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
@@ -32,6 +33,7 @@ public class BookService {
 
 
     // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public Page<BookDto> getAllBooks(Pageable pageable) {
 
         Page<Book> booksPage = bookRepository.findAll(pageable);
@@ -39,14 +41,20 @@ public class BookService {
         return booksPage.map(bookMapper::toDto);
     }
 
+
+
     // En lista på alla böcker
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<BookDto> getAllBooks() {
         List<Book> books = bookRepository.findAll();
 
         return bookMapper.toDtoList(books);
     }
 
+
+
     // Hitta bok genom att söka på bokens titel
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
         if (book == null) {
@@ -58,8 +66,8 @@ public class BookService {
 
 
     // Lägger till en bok
+    @PreAuthorize("hasAnyRole ('ADMIN')")
     public Book addBook(BookRequestDto bookRequestDto) throws NoAuthorFoundException {
-
 
         Book book = bookMapper.toEntity(bookRequestDto);
 
@@ -83,6 +91,7 @@ public class BookService {
 
 
     // Returnerar en lista med en författares böker genom sökning på författarens Efternamn
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<BookDto> getBooksByAuthorLastName(String lastName) throws NoAuthorFoundException {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
 
@@ -92,6 +101,8 @@ public class BookService {
         return bookMapper.toDtoList(books);
     }
 
+
+    @PreAuthorize("hasRole ('ADMIN')")
     public void deleteBookById(Long bookId){
 
         if (!bookRepository.existsById(bookId)) {

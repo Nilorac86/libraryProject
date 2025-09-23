@@ -13,10 +13,10 @@ public class LoginAttemptService {
 
 
 
-    private static final int MAX_ATTEMPTS_PER_MINUTE = 1;
+    private static final int MAX_ATTEMPTS_PER_MINUTE = 5;
     private static final Duration BLOCK_TIME_WINDOW = Duration.ofMinutes(1);
 
-    private static final int MAX_ATTEMPTS_TOTAL = 2;
+    private static final int MAX_ATTEMPTS_TOTAL = 20;
     private static final Duration TOTAL_WINDOW = Duration.ofDays(1);
 
     private Map<String, List<LocalDateTime>> attempts = new ConcurrentHashMap<>();
@@ -55,7 +55,7 @@ public class LoginAttemptService {
     }
 
 
-
+///  ??????
     public boolean isTemporarilyBlocked(String email) {
         List<LocalDateTime> userAttempts = attempts.getOrDefault(email, Collections.emptyList());
         if (userAttempts.isEmpty()) return false;

@@ -57,8 +57,8 @@ public class SecurityConfiguration{
                                 "/books/search", "/books/search/author", "/authors")
                         .hasAnyRole("USER", "ADMIN")// Användare har bara tillgång till vissa sidor.
                         .requestMatchers(HttpMethod.POST, "/authors", "/books").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/loans").hasRole("USER") // En användare kan skapa ett lån.
-                        .requestMatchers(HttpMethod.PUT, "/loans/**").hasRole("USER") // En användare kan lämna tillbaka sitt lån
+                        .requestMatchers(HttpMethod.POST, "/loans").hasAnyRole("USER", "ADMIN") // En användare kan skapa ett lån.
+                        .requestMatchers(HttpMethod.PUT, "/loans/**").hasAnyRole("USER", "ADMIN" ) // En användare kan lämna tillbaka sitt lån
                         .requestMatchers(HttpMethod.GET, "/loans").hasRole("USER")
                         .requestMatchers(HttpMethod.DELETE, "/**").hasRole("ADMIN")
                         .anyRequest().hasRole("ADMIN") // Admin har tillgång till alla sidor
@@ -69,26 +69,42 @@ public class SecurityConfiguration{
                         .authenticationEntryPoint(unauthorizedHandler)
                 )
 
-               .httpBasic(Customizer.withDefaults()) // För att kunna testa i postman
+                // Tvingar att använda https istället.
+                .headers(headers -> headers
+                        .httpStrictTransportSecurity(hsts -> hsts
+                                .includeSubDomains(true)
+                                .maxAgeInSeconds(31536000)) // 1år
+
+                        // Hindrar att angripare försöker lura användaren att klicka på något dolt.
+                        .frameOptions(frame -> frame.deny())
+
+                        // Bestämmer vilka källor sidan får ladda sina resurser ifrån.
+                        // Alla från sin egen domän är det som är inställt.
+                        .contentSecurityPolicy(csp -> csp
+                                .policyDirectives(
+                                        "default-src 'self'; " +
+                                                "script-src 'self'; " +
+                                                "style-src 'self'; " +
+                                                "img-src 'self';"
+                                )
+                        )
+                )
+
+                // För att kunna testa i postman
+               .httpBasic(Customizer.withDefaults())
 
               // .formLogin(Customizer.withDefaults()) // default login
         //.formLogin(form -> form  // Standard inloggning
                         //.loginPage("/login")  // Om man har en frontend
 
 
-
                 .logout(logout -> logout
                         .permitAll())
 
 
-
+                    // Sessionmanager används inte och är då inställt på stateless efter som appen använder jwt tokens
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//                        //.invalidSessionUrl("/login?expired")
-//
-//                        .maximumSessions(1).sessionFixation(sessionFixation -> sessionFixation.changeSessionId())
-//                        .maxSessionsPreventsLogin(false)
-
 
             http
                     .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -99,6 +115,7 @@ public class SecurityConfiguration{
     }
 
 
+    // Krypterar alla lösenord
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -129,11 +146,6 @@ public class SecurityConfiguration{
 
     }
 
-
-//    {
-//            "email": "anna.andersson@email.com",
-//            "password": "password123"
-//            }
 
 
 

@@ -56,8 +56,7 @@ public class AuthEventListener {
             if (request != null) {
                 clientIp = request.getRemoteAddr();
             }
-//        WebAuthenticationDetails details = (WebAuthenticationDetails) event.getAuthentication().getDetails();
-//        String clientIp = details.getRemoteAddress(); // Hämtar IP-adressen
+
         }
 
         String email = event.getAuthentication().getName();

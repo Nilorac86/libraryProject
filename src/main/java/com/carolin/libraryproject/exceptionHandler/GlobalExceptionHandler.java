@@ -132,8 +132,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<Map<String, String>> handleDisabledUser(DisabledException ex) {
         Map<String, String> errorResponse = Map.of(
-                "error","Your account is temporarily locked due to too many failed login attempts. " +
-                        "Please try again later.");
+                "error","Your account is temporarily locked due to too many failed login attempts.");
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
