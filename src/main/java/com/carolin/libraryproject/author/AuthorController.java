@@ -25,7 +25,6 @@ public class AuthorController {
     }
 
     // Hämtar en lista av alla författare
-    @PreAuthorize("hasAnyRole(('ADMIN'), ('USER'))")
     @GetMapping
     public ResponseEntity<List<Author>> getAllAuthors() {
         List<Author> authors = authorService.getAllAuthors();
@@ -39,7 +38,6 @@ public class AuthorController {
 
 
     // Hämtar författare via efternamn i sökvägen
-    @PreAuthorize("hasAnyRole(('ADMIN'), ('USER'))")
     @GetMapping("/lastname")
     public ResponseEntity<List<Author>> searchAuthorByLastname(@RequestParam String lastname) {
         List<Author> authors = authorService.findByLastname(lastname);
@@ -61,11 +59,9 @@ public class AuthorController {
         return ResponseEntity.badRequest().build();
         }
 
-
         authorRequestDto.setFirstName(HtmlSanitizer.cleanAll(authorRequestDto.getFirstName()));
         authorRequestDto.setLastName(HtmlSanitizer.cleanAll(authorRequestDto.getLastName()));
         authorRequestDto.setNationality(HtmlSanitizer.cleanAll(authorRequestDto.getNationality()));
-
 
         Author savedAuthor = authorService.addAuthor(authorRequestDto);
         AuthorDto responseDto = authorMapper.toDto(savedAuthor);

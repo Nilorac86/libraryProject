@@ -14,113 +14,48 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static com.carolin.libraryproject.authentication.RateLimitService.getClientIP;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtUtils;
-    private final TokenBlacklistService tokenBlacklistService;
-    private final LoginAttemptService loginAttemptService;
-    private final JwtRefreshTokenProvider jwtRefreshTokenProvider;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthService authService;
 
-    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtUtils, TokenBlacklistService tokenBlacklistService, LoginAttemptService loginAttemptService, JwtRefreshTokenProvider jwtRefreshTokenProvider, JwtTokenProvider jwtTokenProvider) {
-
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-        this.tokenBlacklistService = tokenBlacklistService;
-        this.loginAttemptService = loginAttemptService;
-        this.jwtRefreshTokenProvider = jwtRefreshTokenProvider;
-        this.jwtTokenProvider = jwtTokenProvider;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
-
-
-
     @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDto loginRequestDto, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto loginRequestDto,
+                                   HttpServletRequest request) {
 
-        // Kontroll om användaren finns och om det stämmer med lösenord
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getEmail(),
-                        loginRequestDto.getPassword()
-                )
+        String clientIP = RateLimitService.getClientIP(request);
+
+        Map<String, String> tokens = authService.login(
+                loginRequestDto.getEmail(),
+                loginRequestDto.getPassword(),
+                clientIP
         );
-
-        //  Spara authentication i SecurityContext
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        //  Generera access-token
-        String accessToken = jwtTokenProvider.generateToken(authentication);
-
-        // Generera refresh-token
-        String refreshToken = jwtRefreshTokenProvider.generateRefreshToken(authentication);
-
-        // 5. Hämta användardetaljer
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String role = jwtTokenProvider.getRoleFromToken(accessToken);
-
-        // 6. Returnera både access och refresh tokens i svaret
-        return ResponseEntity.ok(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "username", userDetails.getUsername(),
-                "role", role
-        ));
+        return ResponseEntity.ok(tokens);
     }
 
 
     @PostMapping("/logout")
-    public ResponseEntity<Map<String, String>> logoutUser(HttpServletRequest request) {
-
-        // Hämtar access-token från Authorization header
+    public ResponseEntity<Map<String, String>> logout(HttpServletRequest request) {
         String accessToken = request.getHeader("Authorization");
-        if (accessToken != null && accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);
-            tokenBlacklistService.blacklistToken(accessToken); // Gör access-token ogiltig
-        }
-
-        // Hämtar refresh-token från en custom header eller request body
         String refreshToken = request.getHeader("Refresh-Token");
-        if (refreshToken != null && !refreshToken.isEmpty()) {
-            tokenBlacklistService.blacklistToken(refreshToken); // Gör refresh-token ogiltig
-        }
-
+        authService.logout(accessToken, refreshToken);
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
-
-
-
     @PostMapping("/refresh")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginRequestDto loginRequestDto) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequestDto.getEmail(),
-                        loginRequestDto.getPassword())
+    public ResponseEntity<?> refresh(@RequestBody LoginRequestDto loginRequestDto) {
+        Map<String, String> tokens = authService.refresh(
+                loginRequestDto.getEmail(),
+                loginRequestDto.getPassword()
         );
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String accessToken = jwtTokenProvider.generateToken(authentication);
-        String refreshToken = jwtRefreshTokenProvider.generateRefreshToken(authentication);
-
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String role = jwtTokenProvider.getRoleFromToken(accessToken);
-
-        return ResponseEntity.ok(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "username", userDetails.getUsername(),
-                "role", role
-        ));
+        return ResponseEntity.ok(tokens);
     }
-
-
-
-
 }

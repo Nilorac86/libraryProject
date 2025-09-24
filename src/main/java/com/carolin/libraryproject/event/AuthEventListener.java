@@ -70,7 +70,7 @@ public class AuthEventListener {
 
         logger.warn("Failed login attempt for '{}' ", logData);
 
-        loginAttemptService.loginFaild(email);
+        loginAttemptService.loginFailed(email);
 
         if(loginAttemptService.isBlocked(email)) {
             logger.warn("User '{}' is blocked due to many failed login attempts", email);

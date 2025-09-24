@@ -40,14 +40,14 @@ public class LoanService {
     // Skapar den inloggade användarens lån tillsammans med bokens id. Uppdaterar antal tillgängliga kopior av boken.
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-    public Loan createLoan(Authentication authentication, Long bookId, Long targetUserId) {
+    public Loan createLoan(Authentication authentication, Long bookId, Long userId) {
         CustomUserDetails loggedUser = (CustomUserDetails) authentication.getPrincipal();
 
         Loan loan = new Loan();
 
-        if (targetUserId != null && loggedUser.getAuthorities().stream()
+        if (userId != null && loggedUser.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))){
-            User targetUser = userRepository.findById(targetUserId)
+            User targetUser = userRepository.findById(userId)
                      .orElseThrow(() -> new EntityNotFoundException("Target user not found"));
            loan.setUser(targetUser);
         } else {
@@ -64,6 +64,7 @@ public class LoanService {
 
         loan.setBook(book);
 
+        // Ändrar bokens tillgängliga kopior efter lån
         book.setAvailableCopies(book.getAvailableCopies() - 1);
         bookRepository.save(book);
 
@@ -91,11 +92,9 @@ public class LoanService {
 
 
         List<Loan> loans = loanRepository.findByUserId(userId);
-
         if (loans.isEmpty()) {
             throw new NoLoanFoundException("No loans found");
         }
-
         return loanMapper.toDtoList(loans);
     }
 

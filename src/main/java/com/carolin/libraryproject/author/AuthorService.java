@@ -23,7 +23,6 @@ public class AuthorService {
     }
 
     // Hämtar alla författare
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<Author> getAllAuthors() {
        List<Author> authors = authorRepository.findAll();
        return authors;
@@ -31,7 +30,6 @@ public class AuthorService {
 
 
     // Hämtar alla författare genom att söka på efternamn
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<Author> findByLastname (String lastname) {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
 

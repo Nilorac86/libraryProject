@@ -68,7 +68,7 @@ public class LoanController {
 
 
     // Se alla sina lån
-    @PreAuthorize("hasAntRole ('ADMIN','USER')")
+    @PreAuthorize("hasAnyRole ('ADMIN','USER')")
     @GetMapping
     public ResponseEntity<List<LoanDto>> getLoans(Authentication authentication, Long userId) {
 
@@ -87,8 +87,6 @@ public class LoanController {
         return ResponseEntity.ok(loans);
 
     }
-
-
 
     @PreAuthorize("hasRole ('ADMIN')")
     @DeleteMapping

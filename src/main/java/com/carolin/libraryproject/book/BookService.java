@@ -33,9 +33,7 @@ public class BookService {
 
 
     // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public Page<BookDto> getAllBooks(Pageable pageable) {
-
         Page<Book> booksPage = bookRepository.findAll(pageable);
 
         return booksPage.map(bookMapper::toDto);
@@ -44,7 +42,6 @@ public class BookService {
 
 
     // En lista på alla böcker
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<BookDto> getAllBooks() {
         List<Book> books = bookRepository.findAll();
 
@@ -54,7 +51,6 @@ public class BookService {
 
 
     // Hitta bok genom att söka på bokens titel
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
         if (book == null) {
@@ -91,7 +87,6 @@ public class BookService {
 
 
     // Returnerar en lista med en författares böker genom sökning på författarens Efternamn
-    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     public List<BookDto> getBooksByAuthorLastName(String lastName) throws NoAuthorFoundException {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
 

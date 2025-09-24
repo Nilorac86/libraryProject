@@ -61,7 +61,7 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 ### 3. Avancerat attack-skydd
 - ~~Implementera rate limiting för inloggningsförsök (max 5 försök per minut)~~
 - ~~Account lockout efter upprepade misslyckade inloggningar~~
-- Konfigurera säkra HTTP-headers (HSTS, X-Frame-Options, Content Security Policy)
+- ~~Konfigurera säkra HTTP-headers (HSTS, X-Frame-Options, Content Security Policy)~~
 - ~~Implementera session/token timeout med automatisk utloggning~~
 - ~~Skydd mot brute force-attacker~~
 
@@ -69,9 +69,9 @@ Ni ska lägga till säkerhetsfunktioner i ert Spring Boot-projekt med hjälp av 
 - ~~Säkerställ att JPA/Hibernate förhindrar SQL injection~~
 - ~~Konfigurera databas med begränsad användarrättigheter~~
 - ~~Kryptera känslig data utöver lösenord (t.ex. personnummer)~~
-- CORS-konfiguration för säkra cross-origin requests
-- Input sanitization för JSON/XML data i REST API
-- API rate limiting per endpoint
+- ~~CORS-konfiguration för säkra cross-origin requests~~
+- ~~Input sanitization för JSON/XML data i REST API~~
+- ~~API rate limiting per endpoint~
 
 ### 5. Säkerhetsarkitektur och dokumentation
 - Förklara JWT vs sessions: fördelar, nackdelar och när man använder vad

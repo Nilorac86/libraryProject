@@ -124,6 +124,20 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
+    @ExceptionHandler(TemporarilyBlockedException.class)
+    public ResponseEntity<Map<String, String>> handleTemporarilyBlocked(TemporarilyBlockedException ex) {
+        log.warn("Temporarily blocked account: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(TooManyRequestsException.class)
+    public ResponseEntity<Map<String, String>> handleTooManyRequests(TooManyRequestsException ex) {
+        log.warn("Too many requests from IP: {}", ex.getMessage());
+        return ResponseEntity.status(429).body(Map.of("error", ex.getMessage()));
+    }
+
+
 
 
 // ########################### GENERELLA EXCEPTIONS ######################################

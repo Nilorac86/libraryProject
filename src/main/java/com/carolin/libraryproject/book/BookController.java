@@ -22,8 +22,6 @@ public class BookController {
 
     private final BookService bookService;
 
-
-
     public BookController(BookService bookService) {
         this.bookService = bookService;
 
@@ -32,7 +30,6 @@ public class BookController {
 
 
     // Lista av alla böcker
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping
     public ResponseEntity<List<BookDto>> findAll() {
         List<BookDto> books = bookService.getAllBooks();
@@ -46,7 +43,6 @@ public class BookController {
 
 
     // Lista av böcker genom pageable sortering
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     @GetMapping("/page")
     public ResponseEntity<Page<BookDto>> getAllBooks(Pageable pageable) {
 
@@ -56,13 +52,11 @@ public class BookController {
             return ResponseEntity.ok(books);
         }
 
-
         return ResponseEntity.notFound().build();
     }
 
 
     // Sök bok efter titel med parameter
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search")
     public ResponseEntity <BookDto> getBooksByTitle(@RequestParam String title) {
 
@@ -81,8 +75,6 @@ public class BookController {
     public ResponseEntity<Object> addBook(@Validated @RequestBody BookRequestDto bookRequestDto) {
 
         bookRequestDto.setTitle(HtmlSanitizer.cleanAll(bookRequestDto.getTitle()));
-
-
         if (bookRequestDto == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -95,14 +87,12 @@ public class BookController {
         }
 
         URI location = URI.create("books/" + savedBook.getId());
-
         return ResponseEntity.created(location).body(savedBook);
     }
 
 
 
     // Hämtar en författares alla böcker genom parameter med författarens efternamn
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/search/author")
     public ResponseEntity<List<BookDto>> searchBookByAuthorLastName(@RequestParam String lastName) {
 

@@ -20,10 +20,12 @@ public class JwtTokenProvider {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${app.jwtSecret:mySecretKey}") // Säker nyckel
+    // Säker nyckel
+    @Value("${app.jwtSecret:mySecretKey}")
     private String jwtSecret;
 
-    @Value("3600000") // Giltig 1h
+    // Giltig 1h
+    @Value("3600000")
     private int jwtExpirationMs;
 
 
@@ -56,6 +58,8 @@ public class JwtTokenProvider {
 
     }
 
+
+    // Läser av vilken roll användaren har genom token
     public String getRoleFromToken(String token) {
 
         return Jwts.parser()
@@ -65,28 +69,9 @@ public class JwtTokenProvider {
                 .get("role", String.class);
     }
 
-    public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
-
-    public String generateTokenFromUsername(String username, String role) {
-        return Jwts.builder()
-                .setSubject(username)
-                .claim("role", role)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
 
 
-
-    // Validering av token med returnerar token true om den är validerad.
+    // Validering av token som returnerar token true om den är validerad annars loggar den felmeddelande.
     public boolean validateToken(String token) {
 
         try{
