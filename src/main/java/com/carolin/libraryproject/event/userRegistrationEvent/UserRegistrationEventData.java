@@ -1,13 +1,13 @@
-package com.carolin.libraryproject.event.eventDto;
+package com.carolin.libraryproject.event.userRegistrationEvent;
 
 import java.time.LocalDateTime;
 
-public class UserRegistrationEventDto {
+public class UserRegistrationEventData {
     private final String email;
     private final String role;
     private final LocalDateTime registeredAt;
 
-    public UserRegistrationEventDto(String email, String role, LocalDateTime registeredAt) {
+    public UserRegistrationEventData(String email, String role, LocalDateTime registeredAt) {
         this.email = email;
         this.role = role;
         this.registeredAt = registeredAt;
@@ -15,14 +15,18 @@ public class UserRegistrationEventDto {
     }
 
     public String getEmail() {
+
         return email;
     }
 
     public String getRole() {
+
         return role;
     }
 
     public LocalDateTime getRegisteredAt() {
+
         return registeredAt;
     }
+
 }

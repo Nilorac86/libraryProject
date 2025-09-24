@@ -7,8 +7,11 @@ import com.carolin.libraryproject.security.CustomUserDetails;
 import com.carolin.libraryproject.user.userDto.UserDto;
 import com.carolin.libraryproject.user.userDto.UserRequestDto;
 import com.carolin.libraryproject.utils.HtmlSanitizer;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,8 @@ public class UserController {
     }
 
 
+    //
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
         if (currentUser == null) {
@@ -50,6 +55,7 @@ public class UserController {
 
 
     // Hämtar en lista av alla användare returnerar en userDto
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
 
@@ -63,11 +69,11 @@ public class UserController {
 
 
 
-    // Hämtar användare baserat på email som variabel i url sökningen
+    // Hämtar användare baserat på email.
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/email")
     public ResponseEntity<UserDto> findUserByEmail(@RequestParam String email) {
         UserDto user = userService.findUserByEmail(email);
-
 
         if (user == null) {
             return ResponseEntity.notFound().build();
@@ -79,7 +85,9 @@ public class UserController {
 
     // Lägger till användare genom input i body.
     @PostMapping("/register")
-    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto) {
+    public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto, HttpServletRequest request) {
+
+        String clientIp = request.getRemoteAddr();
 
         userRequestDto.setFirstName(HtmlSanitizer.cleanAll(userRequestDto.getFirstName()));
         userRequestDto.setLastName(HtmlSanitizer.cleanAll(userRequestDto.getLastName()));
@@ -87,7 +95,7 @@ public class UserController {
         userRequestDto.setPassword(HtmlSanitizer.cleanAll(userRequestDto.getPassword()));
 
         User user = userMapper.toUserEntity(userRequestDto);
-        User savedUser = userService.addUser(user);
+        User savedUser = userService.addUser(user, clientIp);
         UserDto userDto = userMapper.toUserDto(savedUser);
 
         URI location = URI.create("/users/" + savedUser.getId());
@@ -96,9 +104,10 @@ public class UserController {
 
 
     // Hämtar användares lån
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/loans")
-    public ResponseEntity<List<LoanDto>> getLoans(@AuthenticationPrincipal CustomUserDetails loggedInUser) {
-        List<LoanDto> loan = loanService.findUserLoans(loggedInUser.getUser());
+    public ResponseEntity<List<LoanDto>> getLoans(Authentication authentication, Long userId) {
+        List<LoanDto> loan = loanService.findUserLoans(authentication, userId);
 
         if (loan.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -108,7 +117,8 @@ public class UserController {
     }
 
 
-
+    // Admin kan radera användare
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteUser(@RequestParam String email) throws IllegalAccessException {
         userService.deleteUser(email);

@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.book;
 
+import com.carolin.libraryproject.author.AuthorService;
 import com.carolin.libraryproject.book.bookDto.BookDto;
 import com.carolin.libraryproject.book.bookDto.BookRequestDto;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
@@ -21,11 +22,10 @@ public class BookController {
 
     private final BookService bookService;
 
-
     public BookController(BookService bookService) {
         this.bookService = bookService;
-    }
 
+    }
 
 
 
@@ -75,8 +75,6 @@ public class BookController {
     public ResponseEntity<Object> addBook(@Validated @RequestBody BookRequestDto bookRequestDto) {
 
         bookRequestDto.setTitle(HtmlSanitizer.cleanAll(bookRequestDto.getTitle()));
-
-
         if (bookRequestDto == null) {
             return ResponseEntity.badRequest().build();
         }
@@ -89,7 +87,6 @@ public class BookController {
         }
 
         URI location = URI.create("books/" + savedBook.getId());
-
         return ResponseEntity.created(location).body(savedBook);
     }
 

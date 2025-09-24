@@ -1,6 +1,5 @@
-package com.carolin.libraryproject.event.eventListener;
+package com.carolin.libraryproject.event.userRegistrationEvent;
 
-import com.carolin.libraryproject.event.UserRegistrationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -25,7 +24,8 @@ public class UserRegistrationEventListener {
       logData.put("email", data.getEmail());
       logData.put("role", data.getRole());
       logData.put("regiseredAt", data.getRegisteredAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-      
+      logData.put("ipAdress", event.getIpAddress());
+
       logger.info("User registered: {}", logData);
    }
 

@@ -59,11 +59,9 @@ public class AuthorController {
         return ResponseEntity.badRequest().build();
         }
 
-
         authorRequestDto.setFirstName(HtmlSanitizer.cleanAll(authorRequestDto.getFirstName()));
         authorRequestDto.setLastName(HtmlSanitizer.cleanAll(authorRequestDto.getLastName()));
         authorRequestDto.setNationality(HtmlSanitizer.cleanAll(authorRequestDto.getNationality()));
-
 
         Author savedAuthor = authorService.addAuthor(authorRequestDto);
         AuthorDto responseDto = authorMapper.toDto(savedAuthor);

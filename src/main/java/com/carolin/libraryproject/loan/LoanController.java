@@ -1,9 +1,9 @@
 package com.carolin.libraryproject.loan;
 
 import com.carolin.libraryproject.loan.loanDto.LoanDto;
-import com.carolin.libraryproject.security.CustomUserDetails;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,10 +24,13 @@ public class LoanController {
 
 
     // Skapa ett nytt lån med användarid och bokid som parameter. LoanDto response utan password.
+    @PreAuthorize("hasAnyRole ('USER', 'ADMIN')")
     @PostMapping
-    public ResponseEntity<LoanDto> createLoan(@AuthenticationPrincipal CustomUserDetails loggedInUser, @RequestParam Long bookId) {
+    public ResponseEntity<LoanDto> createLoan(Authentication authentication,
+                                              @RequestParam Long bookId,
+                                              @RequestParam(required = false) Long userId) {
 
-        Loan loan = loanService.createLoan(loggedInUser.getUser(), bookId);
+        Loan loan = loanService.createLoan(authentication, bookId, userId);
         LoanDto loanDto = loanMapper.toDto(loan);
         URI location = URI.create("/loans/" + loan.getId());
 
@@ -36,37 +39,60 @@ public class LoanController {
 
 
     // Återlämna lånad bok via lånid i sökväg
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @PutMapping("/return")
-    public ResponseEntity<String> returnLoan(@RequestParam Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
+    public ResponseEntity<String> returnLoan(@RequestParam Long loanId, Authentication authentication) {
 
         if (loanId == null || loanId <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
         }
+        loanService.returnBook(loanId, authentication);
 
-        loanService.returnBook(loanId, loggedInUser.getUser());
         return ResponseEntity.ok("Book returned");
     }
 
 
     // Förlänga lån av bok via lånid i sökväg
+    @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @PutMapping("/extend")
-    public ResponseEntity<String> extendLoan(@RequestParam Long loanId, @AuthenticationPrincipal CustomUserDetails loggedInUser) {
+    public ResponseEntity<String> extendLoan(@RequestParam Long loanId, Authentication authentication) {
 
         if (loanId == null || loanId <= 0) {
             return ResponseEntity.badRequest().body("Id must be a positive integer");
         }
-        loanService.extendBook(loanId, loggedInUser.getUser());
+        loanService.extendBook(loanId, authentication);
         return ResponseEntity.ok("Book extended");
     }
 
 
-    // Se alla sina lån
-    @GetMapping
-    public ResponseEntity<List<LoanDto>> getLoans(@AuthenticationPrincipal CustomUserDetails loggedInUser) {
 
-        List<LoanDto> loans = loanService.findUserLoans(loggedInUser.getUser());
+
+    // Se alla sina lån
+    @PreAuthorize("hasAnyRole ('ADMIN','USER')")
+    @GetMapping
+    public ResponseEntity<List<LoanDto>> getLoans(Authentication authentication, Long userId) {
+
+        List<LoanDto> loans = loanService.findUserLoans(authentication, userId);
         return ResponseEntity.ok(loans);
 
+    }
+
+
+
+    @PreAuthorize("hasRole ('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<List<LoanDto>> getLoans() {
+
+        List<LoanDto> loans = loanService.findAllLoans();
+        return ResponseEntity.ok(loans);
+
+    }
+
+    @PreAuthorize("hasRole ('ADMIN')")
+    @DeleteMapping
+    public ResponseEntity<String> deleteLoan(Long loanId){
+        loanService.deleteLoan(loanId);
+        return ResponseEntity.noContent().build();
     }
 
 

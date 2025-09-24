@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.security;
 
+import com.carolin.libraryproject.authentication.LoginAttemptService;
 import com.carolin.libraryproject.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -12,10 +13,13 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
+    private final LoginAttemptService loginAttemptService;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, LoginAttemptService loginAttemptService) {
         this.user = user;
+        this.loginAttemptService = loginAttemptService;
     }
+
 
     // Returnerar användaren
     public User getUser() {
@@ -35,27 +39,27 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getEmail(); // vi använder email som username
+        return user.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true; // du kan anpassa detta om du vill
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true; // du kan anpassa detta om du vill
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true; // du kan anpassa detta om du vill
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return user.isEnabled(); // använd fältet i din User-entity
+       return !loginAttemptService.isBlocked(user.getEmail());
     }
     
 }

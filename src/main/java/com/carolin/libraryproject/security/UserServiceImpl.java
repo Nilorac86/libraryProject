@@ -1,5 +1,6 @@
 package com.carolin.libraryproject.security;
 
+import com.carolin.libraryproject.authentication.LoginAttemptService;
 import com.carolin.libraryproject.exceptionHandler.UserNotFoundException;
 import com.carolin.libraryproject.user.User;
 import com.carolin.libraryproject.user.UserRepository;
@@ -12,11 +13,12 @@ public class UserServiceImpl implements UserDetailsService {
 
 
     private final UserRepository userRepository;
+    private final LoginAttemptService loginAttemptService;
 
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
-
+        this.loginAttemptService = loginAttemptService;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class UserServiceImpl implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        return new CustomUserDetails(user);
+        return new CustomUserDetails(user, loginAttemptService);
 
 
     }

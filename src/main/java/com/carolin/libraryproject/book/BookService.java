@@ -9,6 +9,7 @@ import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
@@ -30,13 +31,15 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
+
     // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
     public Page<BookDto> getAllBooks(Pageable pageable) {
-
         Page<Book> booksPage = bookRepository.findAll(pageable);
 
         return booksPage.map(bookMapper::toDto);
     }
+
+
 
     // En lista på alla böcker
     public List<BookDto> getAllBooks() {
@@ -44,6 +47,8 @@ public class BookService {
 
         return bookMapper.toDtoList(books);
     }
+
+
 
     // Hitta bok genom att söka på bokens titel
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
@@ -57,8 +62,8 @@ public class BookService {
 
 
     // Lägger till en bok
+    @PreAuthorize("hasAnyRole ('ADMIN')")
     public Book addBook(BookRequestDto bookRequestDto) throws NoAuthorFoundException {
-
 
         Book book = bookMapper.toEntity(bookRequestDto);
 
@@ -91,6 +96,8 @@ public class BookService {
         return bookMapper.toDtoList(books);
     }
 
+
+    @PreAuthorize("hasRole ('ADMIN')")
     public void deleteBookById(Long bookId){
 
         if (!bookRepository.existsById(bookId)) {

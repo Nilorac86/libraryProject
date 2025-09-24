@@ -4,6 +4,7 @@ import com.carolin.libraryproject.author.authorDto.AuthorMapper;
 import com.carolin.libraryproject.author.authorDto.AuthorRequestDto;
 import com.carolin.libraryproject.exceptionHandler.AuthorAlreadyExcistException;
 import com.carolin.libraryproject.exceptionHandler.NoAuthorFoundException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class AuthorService {
        return authors;
     }
 
+
     // Hämtar alla författare genom att söka på efternamn
     public List<Author> findByLastname (String lastname) {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
@@ -38,6 +40,8 @@ public class AuthorService {
         return authors;
     }
 
+
+    @PreAuthorize("hasRole('ADMIN')")
     public Author addAuthor(AuthorRequestDto authorRequestDto) {
 
         Author author = authorMapper.authorToEntity(authorRequestDto);
@@ -53,6 +57,7 @@ public class AuthorService {
     }
 
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteAuthor(Long authorId) {
 
         if (!authorRepository.existsById(authorId)) {
