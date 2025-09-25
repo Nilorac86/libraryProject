@@ -67,7 +67,8 @@ Skydd- X-frame- options är satt till deny i securityconfig.
   
   
 - Beskriv säkerhetsarkitekturen och designbeslut  
-  
+    
+
   
 
 - Analysera kvarvarande säkerhetsrisker och begränsningar
