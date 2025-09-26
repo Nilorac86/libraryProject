@@ -21,6 +21,7 @@ public class UserServiceImpl implements UserDetailsService {
         this.loginAttemptService = loginAttemptService;
     }
 
+    // Hämtar en användare baserat på email
     @Override
     public UserDetails loadUserByUsername(String email) throws UserNotFoundException {
 

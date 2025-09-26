@@ -8,6 +8,7 @@ public class UserRegistrationEvent extends ApplicationEvent {
     private final String ipAddress;
 
 
+    // Innehåller information om den registerade användaren och sparar ipadress där kontot skapades
     public UserRegistrationEvent(Object source, UserRegistrationEventData userData, String ipAddress) {
         super(source);
         this.userData = userData;

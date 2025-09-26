@@ -34,29 +34,52 @@ public class Book {
     public Book() {}
 
     // Getters och setters
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getTitle() { return title; }
+    public String getTitle() {
+        return title;
+    }
 
-    public void setTitle(String title) { this.title = title; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public int getPublicationYear() { return publicationYear; }
+    public int getPublicationYear() {
+        return publicationYear;
+    }
 
-    public void setPublicationYear(int publicationYear) { this.publicationYear = publicationYear; }
+    public void setPublicationYear(int publicationYear) {
+        this.publicationYear = publicationYear;
+    }
 
-    public int getAvailableCopies() { return availableCopies; }
+    public int getAvailableCopies() {
+        return availableCopies;
+    }
 
-    public void setAvailableCopies(int availableCopies) { this.availableCopies = availableCopies; }
+    public void setAvailableCopies(int availableCopies) {
+        this.availableCopies = availableCopies;
+    }
 
-    public int getTotalCopies() { return totalCopies; }
+    public int getTotalCopies() {
+        return totalCopies;
+    }
 
-    public void setTotalCopies(int totalCopies) { this.totalCopies = totalCopies; }
+    public void setTotalCopies(int totalCopies) {
+        this.totalCopies = totalCopies;
+    }
 
-    public Author getAuthor() { return author; }
+    public Author getAuthor() {
+        return author; }
 
-    public void setAuthor(Author author) { this.author = author; }
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
 }
 
 

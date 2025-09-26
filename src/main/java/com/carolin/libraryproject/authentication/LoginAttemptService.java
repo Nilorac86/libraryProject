@@ -69,6 +69,7 @@ public class LoginAttemptService {
 
 
 
+    // Kontrollerar om en användare är tillfälligt blockerad
     public boolean isTemporarilyBlocked(String email) {
         List<LocalDateTime> userAttempts = attempts.getOrDefault(email, Collections.emptyList());
         if (userAttempts.isEmpty()) return false;
@@ -80,7 +81,7 @@ public class LoginAttemptService {
     }
 
 
-
+// Kontrollerar om en användare är helt blockerad
     public boolean isBlocked(String email) {
         LocalDateTime now = LocalDateTime.now();
         List<LocalDateTime> userAttempts = attempts.getOrDefault(email, new ArrayList<>());
@@ -90,13 +91,14 @@ public class LoginAttemptService {
 
 
 
-
+// Om en användare lyckas logga in tas misslyckade försök bort från listan
     public void loginSuccess(String email) {
 
         attempts.remove(email);
     }
 
 
+    // Låser användares konto
     public void lockUserAccount(String email) {
         userRepository.findByEmail(email).ifPresent(user -> {
             user.setEnabled(false);

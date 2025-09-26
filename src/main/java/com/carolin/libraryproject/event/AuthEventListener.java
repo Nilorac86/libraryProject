@@ -43,6 +43,7 @@ public class AuthEventListener {
 
 
 
+    // Lyssnar på användares loggin och loggas när inloggning lyckas
     @EventListener
     public void handleFailedLogin(AbstractAuthenticationFailureEvent event) {
 
@@ -56,9 +57,9 @@ public class AuthEventListener {
             if (request != null) {
                 clientIp = request.getRemoteAddr();
             }
-
         }
 
+        // data som loggas
         String email = event.getAuthentication().getName();
 
         Map<String, Object> logData = new HashMap<>();
@@ -78,8 +79,7 @@ public class AuthEventListener {
     }
 
 
-
-
+    // Lyssnar på när en användare loggar ut och loggar detta
     @EventListener
     public void handleLogoutSuccess(LogoutSuccessEvent event) {
         Map<String, Object> logData = new HashMap<>();

@@ -34,6 +34,7 @@ public class UserService {
     }
 
 
+    // Endast admin kan se alla användare
     // Lista alla användare i dto
     @PreAuthorize("hasRole ('ADMIN')")
     public List<UserDto> findAll() {
@@ -42,6 +43,7 @@ public class UserService {
     }
 
 
+    // Endast admin kan hitta användare via email
     // En optional som returnerar en mappad användare eller UserNotFoundException.
     @PreAuthorize("hasRole ('ADMIN')")
     public UserDto findUserByEmail(String email) {
@@ -53,17 +55,21 @@ public class UserService {
     }
 
 
+    //Public
     // Lägger till användare
     public User addUser(User user, String clientIp) {
 
+        // Om email redan finns
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new EmailAlreadyExcistException("Email is already in use");
         }
 
+        // Krypterar lösenord innan det sparas i databasen
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = userRepository.save(user);
         UserRegistrationEventData userEventDto = UserRegistrationEventMapper.toUserRegistrationData(savedUser);
 
+        // Register event kallas
         eventPublisher.publishEvent(new UserRegistrationEvent(this, userEventDto, clientIp));
 
         return savedUser;
@@ -71,14 +77,18 @@ public class UserService {
     }
 
 
+    // endast admin kan radera användare
     @PreAuthorize("hasRole ('ADMIN')")
     public void deleteUser(String email) throws IllegalAccessException {
+
+
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
 
         boolean hasActiveLoans = loanRepository.existsByUserAndReturnedDateIsNull(user);
 
+        // Om användaren har aktiva lån kan den inte raderas
             if (hasActiveLoans) {
                 throw new IllegalStateException("User have active loans and cannot be deleted");
             }

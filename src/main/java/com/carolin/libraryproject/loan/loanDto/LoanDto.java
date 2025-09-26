@@ -8,6 +8,7 @@ public class LoanDto {
 
 
     private UserDto user;
+
     private Long loanId;
     private BookDto book;
     private LocalDateTime borrowedDate;

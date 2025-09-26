@@ -26,7 +26,7 @@ public class JwtRefreshTokenProvider {
 
 
 
-    // Genererar refresh-token
+    // Genererar refresh-token genom användarens authentisering
     public String generateRefreshToken(Authentication authentication) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         String role = userDetails.getAuthorities().iterator().next().getAuthority();
@@ -39,6 +39,7 @@ public class JwtRefreshTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
+
 
     // Validerar refresh-token
     public boolean validateRefreshToken(String token) {
@@ -63,14 +64,6 @@ public class JwtRefreshTokenProvider {
     }
 
 
-    public String generateTokenFromUsername(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
-                .compact();
-    }
 
     public String getRoleFromRefreshToken(String token) {
         return Jwts.parser()

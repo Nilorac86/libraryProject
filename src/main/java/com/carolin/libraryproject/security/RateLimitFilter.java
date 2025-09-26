@@ -1,4 +1,4 @@
-package com.carolin.libraryproject.authentication;
+package com.carolin.libraryproject.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -18,6 +18,8 @@ public class RateLimitFilter extends OncePerRequestFilter {
         this.rateLimitService = rateLimitService;
     }
 
+
+    // Kontrollerar alla inkommande request och stoppar användare om antalet försök överskridits
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {

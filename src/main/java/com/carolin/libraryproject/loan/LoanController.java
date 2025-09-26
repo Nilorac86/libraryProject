@@ -22,7 +22,7 @@ public class LoanController {
 
     }
 
-
+    // Objektorienterad rollkontroll användare kan skapa lån till sig själv, admin kan skapa åt alla
     // Skapa ett nytt lån med användarid och bokid som parameter. LoanDto response utan password.
     @PreAuthorize("hasAnyRole ('USER', 'ADMIN')")
     @PostMapping
@@ -38,7 +38,8 @@ public class LoanController {
     }
 
 
-    // Återlämna lånad bok via lånid i sökväg
+    // Objektorienterad rollkontroll användare kan återlämna lån till sig själv, admin kan åt en användare
+    // Återlämna lånad bok via parameter
     @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @PutMapping("/return")
     public ResponseEntity<String> returnLoan(@RequestParam Long loanId, Authentication authentication) {
@@ -52,6 +53,7 @@ public class LoanController {
     }
 
 
+    // Objektorienterad rollkontroll användare kan förlänga eget lån, admin kan förlänga åt en användare
     // Förlänga lån av bok via lånid i sökväg
     @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @PutMapping("/extend")
@@ -66,7 +68,7 @@ public class LoanController {
 
 
 
-
+    // Objektorienterad rollkontroll användare kan se alla sina egna lån, admin kan se en användares lån via id.
     // Se alla sina lån
     @PreAuthorize("hasAnyRole ('ADMIN','USER')")
     @GetMapping
@@ -78,7 +80,7 @@ public class LoanController {
     }
 
 
-
+    // Admin kan se allas lån
     @PreAuthorize("hasRole ('ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<LoanDto>> getLoans() {
@@ -88,6 +90,7 @@ public class LoanController {
 
     }
 
+    // Endast admin kan ta bort lån
     @PreAuthorize("hasRole ('ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteLoan(Long loanId){
