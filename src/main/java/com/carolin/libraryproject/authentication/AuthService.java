@@ -77,26 +77,48 @@ public class AuthService {
         }
     }
 
-    public Map<String, String> refresh(String email, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(email, password)
-        );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+    public Map<String, String> refresh(String refreshToken) {
+        if (!jwtRefreshTokenProvider.validateRefreshToken(refreshToken)) {
+            throw new RuntimeException("Invalid or expired refresh token");
+        }
 
+        String username = jwtRefreshTokenProvider.getUsernameFromRefreshToken(refreshToken);
+        String role = jwtRefreshTokenProvider.getRoleFromRefreshToken(refreshToken);
 
-        String accessToken = jwtTokenProvider.generateToken(authentication);
-        String refreshToken = jwtRefreshTokenProvider.generateRefreshToken(authentication);
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String role = jwtTokenProvider.getRoleFromToken(accessToken);
+        // Skapa ny access-token
+        String newAccessToken = jwtTokenProvider.generateTokenFromUsernameAndRole(username, role);
 
         return Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "username", userDetails.getUsername(),
+                "accessToken", newAccessToken,
+                "username", username,
                 "role", role
         );
     }
+
+
+
+//
+//    public Map<String, String> refresh(String email, String password) {
+//        Authentication authentication = authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(email, password)
+//        );
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//
+//        String accessToken = jwtTokenProvider.generateToken(authentication);
+//        String refreshToken = jwtRefreshTokenProvider.generateRefreshToken(authentication);
+//        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+//        String role = jwtTokenProvider.getRoleFromToken(accessToken);
+//
+//        return Map.of(
+//                "accessToken", accessToken,
+//                "refreshToken", refreshToken,
+//                "username", userDetails.getUsername(),
+//                "role", role
+//        );
+//    }
 }
 
 

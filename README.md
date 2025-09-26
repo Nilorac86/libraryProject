@@ -55,7 +55,8 @@ Skydd- Validering av lösenord.
 SQL injection  
 Hot- Angripare kan manipuletra databas frågor genom att skicka skadlig kod via formulär eller URL.  
 Skydd- Validering av indata genom DTO och Valid annotationer.  
-HTML sanitizer, JPA, Att databasfrågor att skrivna på rätt sätt.  
+HTML sanitizer, använda JPA till att skapa databasfrågor i största möjliga utsträckning, att databasfrågor är  
+skrivna på rätt sätt utan string konkatenering exempelvis.  
 
 Man in the middle  
 Hot- Data manipuleras eller avlyssnas genom överföring.  
@@ -65,13 +66,103 @@ Clickjacking
 Hot- Angripare gömmer en dold ifram i appen och lurar användaren att klicka på något de inte ser.  
 Skydd- X-frame- options är satt till deny i securityconfig.  
   
-  
-- Beskriv säkerhetsarkitekturen och designbeslut  
-    
+Informations läckage  
+Hot- En angripare får tag på information om användaren via URL och försöker manipulera den.  
+Skydd- Generera generiska meddelande till användaren där ingen information om användares uppgifter eller liknande.  
+URL att inte. Att databas frågor skrivs på ett korrekt sätt.  
 
   
+
+- Beskriv säkerhetsarkitekturen och designbeslut  
+
+Jag har valt att bygga min app med flera lager av säkerhet för att skydda användare och   datan. Säkerheten är  
+implementerad i fler nivåer från authentisiering och åtkonstkontroll   till skydd mot olika attacker så som   
+brute force, XSS och clickjacking.  
+  
+
+Jag har implementerat
+
+JWT token autentisering:  
+Jag har valt autentisering genom  JWT tokens eftersom det är mer flexibelt än sessions. Om användaren är   
+autentiserad genereras en access token som skickas med och   används via Authorization header som även skyddar    
+mot csrf eftersom det inte skickas   via webbläsaren som cookies gör. Token skickas med vid varje request och  
+innehåller   den autentiserade användarens nödvändiga data som ger åtkomst till rätt data. Jag   använder även   
+en refresh token som har en längre giltighetstid. Den sparas som en http-   only cookie vilket gör att den inte   
+kan nås via JavaScript och minska risken för XSS   attacker. Funktionen logout fungerar på det sättet att både   
+access token och refresh   token blir ogiltig genom att de placeras i en blacklist och kan då inte användas mer.
+
+Rollbaserad åtkomst  
+I min applikation är rollbaserad åtkomst en stor del eftersom det styr vem eller vilka som har tillgång till datan.  
+När en vanlig användare har loggat in får användaren åtkomst till   att se, göra, förlänga och returnera sina egna   
+lån och kan inte komma åt andras lån.   Användaren kan inte komma åt endpoint som är låsta för admin, då får   
+användaren 403   forbidden svar. Admin har däremot tillgång till alla endpoints i applikationen. Rollen   skickas  
+med i varje request eftersom den finns i JWT token. Detta skyddas med   @PreAuthorized både i service och i   
+controller metoderna, requestMatchers är   specifiserat i securityconfigfilterchain. Samt objektbaserad   
+åtkomstkontroll.
+
+RateLimit  
+För att skydda systemet från brute force attacker och överbelastning har jag implementerat rateLimit.   
+Jag använder OncePerRequestFilter som automatiskt kontrollerar alla inkommande requests. Om en användare gör   
+för många requests till en och samma endpoint på kort tid får användaren statuskod 429 too many reqests och  
+användaren blir temporärt blockerad att göra fler requests till den endpointen.
+
+Inloggnings begränsning  
+För att ytterligare skydda mot brute force attacker låses ett konto temporärt om en användare gör fem misslyckade  
+inloggnings försök på en minut. Om antalet misslyckade försök överstiger en viss gräns på en dag spärras kontot   
+helt. Det gör att det blir betydligt svårare för en användare att gissa lösenordet.
+
+Input validering  
+Input valideras genom att jag använder validerings-annoteringar på mina DTOer. Detta säkerställer att endast   
+korrekt information sparas i databasen. För att undvika att känslig information läcker ut returnerar APIet DTOer.
+
+HTML Sanitizer  
+Jag använder en HTML sanitizer för att to bort potentiell skadlig HTML kod från användar inmatning.  
+Detta skyddar databasen och användaren från XSS attacker.
+
+Lösenords validering  
+För att ett lösenord ska vara stark valideras detta genom att det måste innehålla en storbokstav,   
+en liten bokstav, en siffra och vara minst åtta tecken långt. Detta gör lösenordet svårare att gissa.
+
+Cors config  
+CORS är konfigurerat för att endast tillåta anrop från specifika domäner, med vissa metoder och headers.  
+Detta förhindrar obehöriga webbplatser från att anropa API:et från webbläsaren.
+
+HTTP Strict Transport Security  
+HSTS är aktiverat för att tvinga alla requests till att använda HTTPS. Detta skyddar mot   
+man-in-the-middle-attacker där trafik via HTTP annars hade kunnat avlyssnas eller manipuleras.
+
+Frame Options  
+Frame options är satt till DENY för att förhindra att applikationen laddas in i en iframe.
+Detta skyddar mot clickjacking-attacker där en angripare försöker lura användaren att klicka på något dolt   
+genom att visa sidan ovanpå en annan.
+
+Content Security Policy (CSP)  
+CSP är konfigurerad så att endast resurser från den egna domänen får laddas, till exempel skript,   
+bilder och stilmallar. Detta skyddar mot XSS-attacker genom att blockera skadliga resurser från externa källor.
+
+Exception hantering  
+Systemet returnerar generiska felmeddelande. Detta för att skydda mot att en angripare kommer åt  
+känslig information.
+
+
 
 - Analysera kvarvarande säkerhetsrisker och begränsningar
+
+Största risken jag ser med nuvarande implementering är att det finns brister i lösenords validering.  
+Finns flera vaideringar som kan läggas till för att göra det mycket säkrare mot brute force attacker.  
+Att lösenordet måste innehålla minst ett specialtecken, inga uppreppande mönster, vanligt förekommande lösenord.   
+
+Två faktors autentisering skulle göra skyddet ännu starkare och minska risken avsevärt mot angripare. 
+
+Om en användare inte loggar ut sig från en offentlig dator kan token användas tills de går ut eller blacklistas.   
+
+
 - Reflektera över säkerhet kontra användarupplevelse  
 
+Säkerheten är prioriterad i min webbapplikation särskilt kring authentisiering och auktorisering samt skydd mot   
+olika attacker. Detta för att skydda både användaren och data.  Genom att jag valt så hög säkerhets implementering   
+blir det en kompromiss för användarupplevelsen som till exempel kontolåsning vid för många inloggningar,   
+regelbunda refresh-tokens för att undvika utloggning, input validering med strikta regler. Eftersom jag vill hålla 
+applikationen så säker som möjligt får användaren endast generiska svar och inte tydlig information på vad som   
+gått fel.
 

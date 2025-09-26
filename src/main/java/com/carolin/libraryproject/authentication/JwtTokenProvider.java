@@ -70,6 +70,18 @@ public class JwtTokenProvider {
     }
 
 
+    // I JwtTokenProvider
+    public String generateTokenFromUsernameAndRole(String username, String role) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .compact();
+    }
+
+
 
     // Validering av token som returnerar token true om den är validerad annars loggar den felmeddelande.
     public boolean validateToken(String token) {

@@ -3,6 +3,7 @@ package com.carolin.libraryproject.authentication;
 import com.carolin.libraryproject.authentication.authDto.JwtResponseDto;
 import com.carolin.libraryproject.authentication.authDto.LoginRequestDto;
 import com.carolin.libraryproject.security.CustomUserDetails;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,12 +51,44 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
     }
 
+
     @PostMapping("/refresh")
-    public ResponseEntity<?> refresh(@RequestBody LoginRequestDto loginRequestDto) {
-        Map<String, String> tokens = authService.refresh(
-                loginRequestDto.getEmail(),
-                loginRequestDto.getPassword()
-        );
-        return ResponseEntity.ok(tokens);
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        // 1. Försök läsa från header
+        String refreshToken = request.getHeader("Refresh-Token");
+
+        // 2. Om ingen header → kolla cookies
+        if (refreshToken == null && request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+
+        // 3. Om fortfarande null → fel
+        if (refreshToken == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Missing refresh token");
+        }
+
+        // 4. Skicka vidare till AuthService
+        Map<String, String> tokens = authService.refresh(refreshToken);
+
+        return ResponseEntity.ok(Map.of(
+                "accessToken", tokens.get("accessToken"),
+                "username", tokens.get("username"),
+                "role", tokens.get("role")
+        ));
     }
+
+
+
+//    @PostMapping("/refresh")
+//    public ResponseEntity<?> refresh(@RequestBody LoginRequestDto loginRequestDto) {
+//        Map<String, String> tokens = authService.refresh(
+//                loginRequestDto.getEmail(),
+//                loginRequestDto.getPassword()
+//        );
+//        return ResponseEntity.ok(tokens);
+//    }
 }
