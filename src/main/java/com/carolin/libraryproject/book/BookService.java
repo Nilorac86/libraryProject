@@ -31,7 +31,7 @@ public class BookService {
         this.bookMapper = bookMapper;
     }
 
-
+    //Public
     // Hämtar böcker baserat på sökning genom, size (antal svar), sort(ex title,asc,desc), page 0->.
     public Page<BookDto> getAllBooks(Pageable pageable) {
         Page<Book> booksPage = bookRepository.findAll(pageable);
@@ -40,7 +40,7 @@ public class BookService {
     }
 
 
-
+    //Public
     // En lista på alla böcker
     public List<BookDto> getAllBooks() {
         List<Book> books = bookRepository.findAll();
@@ -49,7 +49,7 @@ public class BookService {
     }
 
 
-
+    //Public
     // Hitta bok genom att söka på bokens titel
     public BookDto getBookByTitle(String title) throws EntityNotFoundException {
         Book book = bookRepository.searchBookByTitleIgnoreCase(title);
@@ -60,7 +60,7 @@ public class BookService {
         return bookMapper.toDto(book);
     }
 
-
+    //Endast admin kan lägga till en bok
     // Lägger till en bok
     @PreAuthorize("hasAnyRole ('ADMIN')")
     public Book addBook(BookRequestDto bookRequestDto) throws NoAuthorFoundException {
@@ -85,7 +85,7 @@ public class BookService {
     }
 
 
-
+    //Public
     // Returnerar en lista med en författares böker genom sökning på författarens Efternamn
     public List<BookDto> getBooksByAuthorLastName(String lastName) throws NoAuthorFoundException {
         List<Book> books = bookRepository.searchBookByAuthorByLastname(lastName);
@@ -96,7 +96,8 @@ public class BookService {
         return bookMapper.toDtoList(books);
     }
 
-
+    // Endast admin kan ta bort bok
+    // Tar bort en bok
     @PreAuthorize("hasRole ('ADMIN')")
     public void deleteBookById(Long bookId){
 

@@ -24,6 +24,7 @@ public class AuthorController {
         this.authorMapper = authorMapper;
     }
 
+    // Public
     // Hämtar en lista av alla författare
     @GetMapping
     public ResponseEntity<List<Author>> getAllAuthors() {
@@ -36,8 +37,8 @@ public class AuthorController {
     }
 
 
-
-    // Hämtar författare via efternamn i sökvägen
+    // Public
+    // Hämtar författare via efternamn i params
     @GetMapping("/lastname")
     public ResponseEntity<List<Author>> searchAuthorByLastname(@RequestParam String lastname) {
         List<Author> authors = authorService.findByLastname(lastname);
@@ -51,6 +52,7 @@ public class AuthorController {
 
 
     // Lägger till en författare
+    // Endast admin får lägga till författare
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<AuthorDto> addAuthor(@Validated @RequestBody AuthorRequestDto authorRequestDto) {
@@ -59,6 +61,7 @@ public class AuthorController {
         return ResponseEntity.badRequest().build();
         }
 
+        // Skydd mot XSS attack
         authorRequestDto.setFirstName(HtmlSanitizer.cleanAll(authorRequestDto.getFirstName()));
         authorRequestDto.setLastName(HtmlSanitizer.cleanAll(authorRequestDto.getLastName()));
         authorRequestDto.setNationality(HtmlSanitizer.cleanAll(authorRequestDto.getNationality()));
@@ -73,6 +76,8 @@ public class AuthorController {
 
 
 
+    // Tar bort författare genom id.
+    // Endast admin får ta bort en författare
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteAuthor(@RequestParam Long authorId) {

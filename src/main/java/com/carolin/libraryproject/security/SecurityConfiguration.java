@@ -2,8 +2,6 @@ package com.carolin.libraryproject.security;
 
 import com.carolin.libraryproject.authentication.JwtAuthenticationEntryPoint;
 import com.carolin.libraryproject.authentication.JwtAuthenticationFilter;
-import com.carolin.libraryproject.authentication.RateLimitFilter;
-import com.carolin.libraryproject.authentication.RateLimitService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -62,7 +60,7 @@ public class SecurityConfiguration{
                         // Endpoint som Inloggad användare och admin har tillgång till
                         .requestMatchers(HttpMethod.POST, "/loans").hasAnyRole("USER", "ADMIN") // En användare kan skapa ett lån.
                         .requestMatchers(HttpMethod.PUT, "/loans/**").hasAnyRole("USER", "ADMIN" ) // En användare kan lämna tillbaka sitt lån
-                        .requestMatchers(HttpMethod.GET, "/loans").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/loans").hasAnyRole("USER", "ADMIN")
 
                         // Endpoints som bara admin har tillgång till.
                         .requestMatchers(HttpMethod.POST, "/authors", "/books").hasRole("ADMIN")

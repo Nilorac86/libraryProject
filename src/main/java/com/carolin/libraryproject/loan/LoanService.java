@@ -36,17 +36,22 @@ public class LoanService {
         this.loanMapper = loanMapper;
     }
 
-
+    // Objektorienterad rollkontroll användare kan låna på sig själv, admin kan se en användares låna åt en användare.
     // Skapar den inloggade användarens lån tillsammans med bokens id. Uppdaterar antal tillgängliga kopior av boken.
     @Transactional
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public Loan createLoan(Authentication authentication, Long bookId, Long userId) {
+
+        // Hämtar inloggad användares autentisering
         CustomUserDetails loggedUser = (CustomUserDetails) authentication.getPrincipal();
 
         Loan loan = new Loan();
 
+        // Kollar om användar id är satt och om den inloggade är admin
         if (userId != null && loggedUser.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"))){
+
+            // Om inte admin sätts lånet på den inloggade användaren.
             User targetUser = userRepository.findById(userId)
                      .orElseThrow(() -> new EntityNotFoundException("Target user not found"));
            loan.setUser(targetUser);
@@ -71,27 +76,32 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
-
+    //Objektorienterad rollkontroll användare kan se alla sina egna lån, admin kan se en användares lån via id
     // Hämtar den inloggade användarens alla lån.
     @PreAuthorize("hasAnyRole ('USER', 'ADMIN')")
     public List<LoanDto> findUserLoans (Authentication authentication, Long userId) {
 
+        // Hämtar inloggad användare
         CustomUserDetails loggedInUser = (CustomUserDetails) authentication.getPrincipal();
 
-
+        //Kontroll om användaren är admin
         boolean isAdmin = loggedInUser.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 
+        // Om inget användar id skickas med sätt det på den inloggade användaren
         if (userId == null) {
             userId = loggedInUser.getUser().getId();
         }
 
+        // Om användaren inte är den specifika användaren eller admin kastas ett exception
         if (!userId.equals(loggedInUser.getUser().getId()) && !isAdmin) {
             throw new SecurityException("You do not have permission to view these loans");
         }
 
-
+        // Hämtar lån
         List<Loan> loans = loanRepository.findByUserId(userId);
+
+        //Om inga lån ett exception skickas.
         if (loans.isEmpty()) {
             throw new NoLoanFoundException("No loans found");
         }
@@ -100,19 +110,24 @@ public class LoanService {
 
 
 
+    //Objektorienterad rollkontroll användare kan lämna tillbaka sina egna lån, admin kan lämna tillbaka
+    // en användares lån via id..
     // Återlämning av bok den inloggade användaren. Lägger till dagens datum för retur av lånet
     // samt uppdaterar antalet tillgängliga kopior.
-
     @PreAuthorize("hasAnyRole ('ADMIN','USER')")
     public void returnBook(Long loanId, Authentication authentication) {
+
+        //Hämtar inloggad användare
         CustomUserDetails loggedInUser = (CustomUserDetails) authentication.getPrincipal();
 
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new RuntimeException("Loan not found"));
 
+        // Kontroll om det är admin
         boolean isAdmin = loggedInUser.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
 
+        // Om inte den inloggade är den specifika användaren eller admin kastas ett exception.
         if (!loan.getUser().getId().equals(loggedInUser.getUser().getId()) && !isAdmin) {
             throw new SecurityException("You do not have permission to return this loan");
         }
@@ -133,30 +148,40 @@ public class LoanService {
 
 
 
+
+    //Objektorienterad rollkontroll användare kan förlänga  sina egna lån, admin kan förlänga
+    // en användares lån via id.
     // Förlänga returdatum på en lånad bok
     @PreAuthorize("hasAnyRole ('ADMIN','USER')")
     public void extendBook(Long loanId, Authentication authentication) {
+
+        // Hämta inloggad användare
         CustomUserDetails loggedInUser = (CustomUserDetails) authentication.getPrincipal();
+
 
         Loan loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new EntityNotFoundException("Loan not found"));
 
+        // Kontroll om det är en admin
         boolean isAdmin = loggedInUser.getAuthorities().stream()
                 .anyMatch(authority -> authority
                         .getAuthority().equals("ROLE_ADMIN"));
 
+        // Om inte den inloggade är den specifika användaren eller admin kastas ett exception.
         if (!loan.getUser().getId().equals(loggedInUser.getUser().getId()) && !isAdmin) {
             throw new SecurityException("You do not have permission to return this loan");
         }
-
+        // Om retur datum var innan idag kastas ett exception
         if (loan.getDueDate().isBefore(LocalDateTime.now())) {
             throw new LoanExpiredException("Loan duedate has passed. Loan cannot be extended");
         }
 
+        // Om boken redan är åtelämnad
         if (loan.getReturnedDate() != null) {
             throw new IllegalStateException("Book already returned and cannot be extended");
         }
 
+        // Förlänger lånet med 14 dagar
         LocalDateTime newReturnDate = loan.getDueDate().plusDays(14);
         loan.setDueDate(newReturnDate);
         loanRepository.save(loan);
@@ -166,6 +191,7 @@ public class LoanService {
 
    // ########################### ADMIN ONLY ###################################
 
+    // Endast admin kan se alla användares lån
     @PreAuthorize("hasRole ('ADMIN')")
     public List<LoanDto> findAllLoans() {
         List<Loan> loans = loanRepository.findAll();
@@ -174,6 +200,7 @@ public class LoanService {
 
 
 
+    // Endast en admin kan radera ett lån
     @PreAuthorize("hasRole ('ADMIN')")
     public void deleteLoan(Long loanId) {
         if (!loanRepository.existsById(loanId)) {

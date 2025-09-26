@@ -22,6 +22,7 @@ public class AuthorService {
         this.authorMapper = authorMapper;
     }
 
+    //Public
     // Hämtar alla författare
     public List<Author> getAllAuthors() {
        List<Author> authors = authorRepository.findAll();
@@ -29,6 +30,7 @@ public class AuthorService {
     }
 
 
+    //Public
     // Hämtar alla författare genom att söka på efternamn
     public List<Author> findByLastname (String lastname) {
         List<Author> authors = authorRepository.findAuthorsByLastnameIgnoreCase(lastname);
@@ -41,6 +43,7 @@ public class AuthorService {
     }
 
 
+    // Endast admin har tillgång till denna
     @PreAuthorize("hasRole('ADMIN')")
     public Author addAuthor(AuthorRequestDto authorRequestDto) {
 
@@ -57,6 +60,7 @@ public class AuthorService {
     }
 
 
+    // Tar bort en författare
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteAuthor(Long authorId) {
 

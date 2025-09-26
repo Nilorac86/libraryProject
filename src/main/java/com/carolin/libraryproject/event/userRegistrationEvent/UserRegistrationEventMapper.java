@@ -4,6 +4,7 @@ import com.carolin.libraryproject.user.User;
 
 public class UserRegistrationEventMapper {
 
+    // Samla data på ett ställe
     public static UserRegistrationEventData toUserRegistrationData(User user) {
 
         return

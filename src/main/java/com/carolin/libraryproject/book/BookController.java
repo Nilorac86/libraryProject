@@ -29,6 +29,7 @@ public class BookController {
 
 
 
+    //Public
     // Lista av alla böcker
     @GetMapping
     public ResponseEntity<List<BookDto>> findAll() {
@@ -41,7 +42,7 @@ public class BookController {
     }
 
 
-
+    //Public
     // Lista av böcker genom pageable sortering
     @GetMapping("/page")
     public ResponseEntity<Page<BookDto>> getAllBooks(Pageable pageable) {
@@ -55,7 +56,7 @@ public class BookController {
         return ResponseEntity.notFound().build();
     }
 
-
+    //Public
     // Sök bok efter titel med parameter
     @GetMapping("/search")
     public ResponseEntity <BookDto> getBooksByTitle(@RequestParam String title) {
@@ -68,7 +69,7 @@ public class BookController {
     }
 
 
-
+    //Public
     // Lägger till en ny bok
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -91,7 +92,7 @@ public class BookController {
     }
 
 
-
+    //Public
     // Hämtar en författares alla böcker genom parameter med författarens efternamn
     @GetMapping("/search/author")
     public ResponseEntity<List<BookDto>> searchBookByAuthorLastName(@RequestParam String lastName) {
@@ -106,7 +107,8 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-
+    // endast Admin
+    //Ta bort en bok
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     public ResponseEntity<String> deleteBook(@RequestParam Long bookId) {

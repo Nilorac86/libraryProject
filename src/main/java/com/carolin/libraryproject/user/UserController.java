@@ -38,7 +38,7 @@ public class UserController {
     }
 
 
-    //
+    // Alla inloggade kan hämta sin info
     @PreAuthorize("hasAnyRole ('ADMIN', 'USER')")
     @GetMapping("/me")
     public ResponseEntity<UserDto> getLoggedInUser(@AuthenticationPrincipal CustomUserDetails currentUser) {
@@ -46,14 +46,12 @@ public class UserController {
 
             return ResponseEntity.status(401).build();
         }
-
         UserDto userDto = userService.findUserByEmail(currentUser.getUsername());
-
         return ResponseEntity.ok(userDto);
 
     }
 
-
+    // Endast admin
     // Hämtar en lista av alla användare returnerar en userDto
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -68,7 +66,7 @@ public class UserController {
     }
 
 
-
+    // Endast admin
     // Hämtar användare baserat på email.
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/email")
@@ -83,12 +81,15 @@ public class UserController {
     }
 
 
+    // Public
     // Lägger till användare genom input i body.
     @PostMapping("/register")
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody UserRequestDto userRequestDto, HttpServletRequest request) {
 
+        // Sparar användares ipAdress
         String clientIp = request.getRemoteAddr();
 
+        // Skydd mot XSS attack
         userRequestDto.setFirstName(HtmlSanitizer.cleanAll(userRequestDto.getFirstName()));
         userRequestDto.setLastName(HtmlSanitizer.cleanAll(userRequestDto.getLastName()));
         userRequestDto.setEmail(HtmlSanitizer.cleanAll(userRequestDto.getEmail()));
@@ -103,18 +104,17 @@ public class UserController {
     }
 
 
-    // Hämtar användares lån
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    // Objektorienterad rollkontroll användare kan se alla sina egna lån, admin kan se en användares lån via id.
+    // Se alla sina lån
+    @PreAuthorize("hasAnyRole ('ADMIN','USER')")
     @GetMapping("/loans")
     public ResponseEntity<List<LoanDto>> getLoans(Authentication authentication, Long userId) {
-        List<LoanDto> loan = loanService.findUserLoans(authentication, userId);
 
-        if (loan.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        List<LoanDto> loans = loanService.findUserLoans(authentication, userId);
+        return ResponseEntity.ok(loans);
 
-        return ResponseEntity.ok(loan);
     }
+
 
 
     // Admin kan radera användare

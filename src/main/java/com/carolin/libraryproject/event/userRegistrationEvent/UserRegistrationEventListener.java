@@ -14,6 +14,7 @@ public class UserRegistrationEventListener {
 
    private static final Logger logger = LoggerFactory.getLogger(UserRegistrationEventListener.class);
 
+   // Lyssnar på när en användare registreras och loggar detta
    @EventListener
    public void onUserRegistered(UserRegistrationEvent event) {
 
